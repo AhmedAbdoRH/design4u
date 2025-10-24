@@ -5,12 +5,12 @@
 @tailwind utilities;
 
 :root {
-  --color-primary: #300000;    /* أسود حالك */
-  --color-secondary: #ffffff;  /* أبيض نقي */
-  --color-accent: #d99323;     /* ذهبي لامع */
-  --color-accent-light: #e0a745; /* ذهبي أفتح */
-  --background-color: #2a2a2a;
-  --background-gradient: none;
+  --color-primary: #ffffff;    /* أبيض نقي */
+  --color-secondary: #2a2a2a;  /* رصاصي غامق */
+  --color-accent: #4a5568;     /* رصاصي متوسط */
+  --color-accent-light: #718096; /* رصاصي فاتح */
+  --background-color: #f7fafc;  /* أبيض فاتح جداً */
+  --background-gradient: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
   --font-family: 'Cairo', sans-serif;
 }
 
@@ -20,20 +20,18 @@ html {
 
 body {
   font-family: var(--font-family, 'Cairo', sans-serif);
-  background-color: var(--background-color, #2a2a2a);
-  color: var(--color-secondary, #ffffff);
-  /* دعم التدرج اللوني للخلفية */
-  background-image: var(--background-gradient, none);
+  background: var(--background-gradient, linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%));
+  color: var(--color-secondary, #2a2a2a);
   background-size: cover;
   background-repeat: no-repeat;
   background-attachment: fixed;
 }
 
 .glass {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.7);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(0, 0, 0, 0.1);
 }
 
 /* Facebook Button Styles */

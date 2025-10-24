@@ -5,5 +5,9 @@ const supabaseAnonKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYm
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
+// Debug logging to verify connection
+console.log('🔗 Supabase Connected to:', supabaseUrl);
+console.log('🔑 Using Anon Key:', supabaseAnonKey.substring(0, 20) + '...');
+
 // Service role client for admin operations (use with caution)
 export const supabaseAdmin = createClient(supabaseUrl, "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFrdWJiZXN0ZmtremlqcnNpemFmIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2MTIyNjYwNSwiZXhwIjoyMDc2ODAyNjA1fQ.kREJ6ixFkHTQMUd0dNHiflw1YZYSn3nVbNHSVE_mWZU");

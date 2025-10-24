@@ -1723,7 +1723,7 @@ export default function AdminDashboard({ onSettingsUpdate }: AdminDashboardProps
                         <div className="flex justify-start mb-2 gap-1">
                           <a 
                             id="canva-banner-button"
-                            href="https://www.canva.com/design/DAGxiEhNhbw/eXR_AZsWGumCY5a4NrCYiw/edit?utm_content=DAGxiEhNhbw&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton" 
+                            href="https://www.canva.com/design/DAG2t7Uv1-4/wGKApWY4sgW9y5HGINGJsA/edit" 
                             target="_blank" 
                             rel="noopener noreferrer"
                             className="px-2 py-1 rounded-md text-xs font-medium bg-gradient-to-l from-blue-800 to-purple-800 text-white hover:from-blue-600 hover:to-purple-800 transition-all flex items-center gap-0.5"

@@ -1,12 +1,8 @@
 import { useEffect, useState, useCallback } from 'react';
 import ServiceCard from './ServiceCard';
-import FacebookButton from './FacebookButton';
 import { supabase } from '../lib/supabase';
 import type { Service, Category, Subcategory } from '../types/database';
 import { motion, AnimatePresence } from 'framer-motion';
-
-const lightGold = '#FFD700';
-const brownDark = '#3d2c1d';
 
 export default function Services() {
   const [services, setServices] = useState<Service[]>([]);
@@ -124,8 +120,8 @@ export default function Services() {
 
   if (isLoading) {
     return (
-      <div className="py-16" style={{backgroundColor: '#2a2a2a'}}>
-        <div className="container mx-auto px-4 text-center text-white">
+      <div className="py-16" style={{backgroundColor: '#f7fafc'}}>
+        <div className="container mx-auto px-4 text-center text-gray-600">
         </div>
       </div>
     );
@@ -133,7 +129,7 @@ export default function Services() {
 
   if (error) {
     return (
-      <div className="py-16" style={{backgroundColor: '#2a2a2a'}}>
+      <div className="py-16" style={{backgroundColor: '#f7fafc'}}>
         <div className="container mx-auto px-4 text-center text-red-600">
           حدث خطأ أثناء تحميل الخدمات: {error}
         </div>
@@ -142,18 +138,10 @@ export default function Services() {
   }
 
   return (
-    <section className="py-16" style={{backgroundColor: '#2a2a2a'}} id="services">
-      {/* Facebook Button */}
-      <motion.div
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, delay: 0.2 }}
-      >
-        <FacebookButton />
-      </motion.div>
+    <section className="py-16" style={{backgroundColor: '#f7fafc'}} id="services">
       
       <motion.div
-        className="container mx-auto px-4 bg-white/5 backdrop-blur-xl rounded-2xl p-8 border border-white/10 shadow-2xl shadow-black/40"
+        className="container mx-auto px-4 bg-gray-100/70 backdrop-blur-xl rounded-2xl p-8 border border-gray-200/50 shadow-2xl shadow-gray-300/40"
         initial="hidden"
         animate="visible"
         variants={{
@@ -170,7 +158,7 @@ export default function Services() {
           }}
           transition={{ duration: 0.6, ease: 'easeOut' }}
         >
-          <h2 className="text-3xl font-bold mb-4 text-[#FFD700]">
+          <h2 className="text-3xl font-bold mb-4 text-gray-800">
             {selectedSubcategory ? (
               <>
                 {subcategories.find(sc => sc.id === selectedSubcategory)?.name} - 
@@ -184,7 +172,7 @@ export default function Services() {
           </h2>
           
           {/* SEO-optimized description */}
-          <div className="max-w-3xl mx-auto text-white/80 text-lg leading-relaxed">
+          <div className="max-w-3xl mx-auto text-gray-600 text-lg leading-relaxed">
             {selectedSubcategory ? (
               <p>
                 اكتشف مجموعة واسعة من <strong>{subcategories.find(sc => sc.id === selectedSubcategory)?.name}</strong> 
@@ -225,8 +213,8 @@ export default function Services() {
             }}
               className={`p-4 rounded-xl transition-all duration-300 ${
                 !selectedCategory
-                  ? 'bg-green-500 text-black font-bold shadow-md'
-                  : 'bg-black/20 text-white hover:bg-black/30 hover:shadow-md'
+                  ? 'bg-blue-500 text-white font-bold shadow-md'
+                  : 'bg-gray-200 text-gray-700 hover:bg-gray-300 hover:shadow-md'
               }`}
             variants={{
               hidden: { opacity: 0, y: 20 },
@@ -245,8 +233,8 @@ export default function Services() {
               }}
               className={`p-4 rounded-xl transition-all duration-300 ${
                 selectedCategory === 'featured'
-                  ? 'bg-yellow-500 text-black font-bold shadow-md'
-                  : 'bg-yellow-500/20 text-yellow-300 hover:bg-yellow-500/30 hover:shadow-md'
+                  ? 'bg-amber-500 text-white font-bold shadow-md'
+                  : 'bg-amber-100 text-amber-700 hover:bg-amber-200 hover:shadow-md'
               }`}
               variants={{
                 hidden: { opacity: 0, y: 20 },
@@ -268,8 +256,8 @@ export default function Services() {
               }}
               className={`p-4 rounded-xl transition-all duration-300 ${
                 selectedCategory === 'best_sellers'
-                  ? 'bg-red-500 text-black font-bold shadow-md'
-                  : 'bg-red-500/20 text-red-300 hover:bg-red-500/30 hover:shadow-md'
+                  ? 'bg-rose-500 text-white font-bold shadow-md'
+                  : 'bg-rose-100 text-rose-700 hover:bg-rose-200 hover:shadow-md'
               }`}
               variants={{
                 hidden: { opacity: 0, y: 20 },
@@ -298,8 +286,8 @@ export default function Services() {
                 onClick={() => handleCategoryClick(category.id)}
                 className={`p-4 rounded-xl transition-all duration-300 ${
                   category.id === selectedCategory
-                    ? 'bg-green-500 text-black font-bold shadow-md'
-                    : 'bg-black/20 text-white hover:bg-black/30 hover:shadow-md'
+                    ? 'bg-blue-500 text-white font-bold shadow-md'
+                    : 'bg-gray-200 text-gray-700 hover:bg-gray-300 hover:shadow-md'
                 }`}
                 variants={{
                   hidden: { opacity: 0, y: 20 },
@@ -326,8 +314,8 @@ export default function Services() {
                 onClick={() => handleSubcategoryClick(null)}
                 className={`px-6 py-2 rounded-full text-sm font-semibold transition-all duration-300 transform hover:scale-105 ${
                   selectedSubcategory === null
-                    ? 'bg-gradient-to-r from-green-500 to-yellow-500 text-black shadow-xl'
-                    : 'bg-white/10 text-white border-2 border-white/20 hover:bg-white/20 hover:border-white/40 hover:shadow-lg'
+                    ? 'bg-gradient-to-r from-blue-500 to-indigo-500 text-white shadow-xl'
+                    : 'bg-gray-100 text-gray-600 border-2 border-gray-300 hover:bg-gray-200 hover:border-gray-400 hover:shadow-lg'
                 }`}
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
@@ -348,8 +336,8 @@ export default function Services() {
                       onClick={() => handleSubcategoryClick(subcategory.id)}
                       className={`px-6 py-2 rounded-full text-sm font-semibold transition-all duration-300 transform hover:scale-105 ${
                         selectedSubcategory === subcategory.id
-                          ? 'bg-gradient-to-r from-green-500 to-yellow-500 text-black shadow-xl'
-                          : 'bg-white/10 text-white border-2 border-white/20 hover:bg-white/20 hover:border-white/40 hover:shadow-lg'
+                          ? 'bg-gradient-to-r from-blue-500 to-indigo-500 text-white shadow-xl'
+                          : 'bg-gray-100 text-gray-600 border-2 border-gray-300 hover:bg-gray-200 hover:border-gray-400 hover:shadow-lg'
                       }`}
                       initial={{ opacity: 0, scale: 0.8 }}
                       animate={{ opacity: 1, scale: 1 }}
@@ -406,7 +394,7 @@ export default function Services() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                className="col-span-full text-center text-white text-xl"
+                className="col-span-full text-center text-gray-500 text-xl"
                 transition={{ duration: 0.5 }}
               >
                 لا توجد خدمات في هذه الفئة.
