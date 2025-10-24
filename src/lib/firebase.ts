@@ -1,0 +1,1 @@
+Couldn't find the requested file /src/lib/firebase.ts in AhmedAbdoRH/Smartteameg.

@@ -1,0 +1,95 @@
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --color-primary: #300000;    /* أسود حالك */
+  --color-secondary: #ffffff;  /* أبيض نقي */
+  --color-accent: #d99323;     /* ذهبي لامع */
+  --color-accent-light: #e0a745; /* ذهبي أفتح */
+  --background-color: #2a2a2a;
+  --background-gradient: none;
+  --font-family: 'Cairo', sans-serif;
+}
+
+html {
+  direction: rtl;
+}
+
+body {
+  font-family: var(--font-family, 'Cairo', sans-serif);
+  background-color: var(--background-color, #2a2a2a);
+  color: var(--color-secondary, #ffffff);
+  /* دعم التدرج اللوني للخلفية */
+  background-image: var(--background-gradient, none);
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
+.glass {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Facebook Button Styles */
+/* From Uiverse.io by mahtabmurad24 */ 
+button.facebook-button {
+  font-family: inherit;
+  font-size: 18px;
+  background: linear-gradient(to bottom, #0d36b3 0%, #0063ad 100%);
+  color: white;
+  padding: 0.8em 1.2em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 25px;
+  box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s;
+  width: 15em;
+  height: 2.5em;
+}
+
+button.facebook-button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.3);
+}
+
+button.facebook-button:active {
+  transform: scale(0.95);
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+button.facebook-button span {
+  display: block;
+  margin-left: 0;
+  transition: all 0.3s;
+}
+
+button.facebook-button svg {
+  width: 18px;
+  height: 18px;
+  fill: white;
+  transition: all 0.3s;
+}
+
+button.facebook-button .svg-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.2);
+  margin-right: 1.5em;
+  transition: all 0.3s;
+}
+
+button.facebook-button:hover svg {
+  transform: rotate(90deg);
+}

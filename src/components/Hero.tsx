@@ -1,0 +1,1 @@
+Couldn't find the requested file /src/components/Hero.tsx in AhmedAbdoRH/Smartteameg.

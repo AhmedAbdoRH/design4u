@@ -1,0 +1,38 @@
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://designs4u.com/sitemap.xml
+
+# Crawl-delay for better server performance
+Crawl-delay: 1
+
+# Disallow admin areas
+Disallow: /admin/
+Disallow: /admin/login
+Disallow: /admin/dashboard
+
+# Allow important pages
+Allow: /
+Allow: /product/
+Allow: /service/
+Allow: /category/
+Allow: /subcategory/
+
+# Allow essential assets for rendering
+Allow: /*.js$
+Allow: /*.css$
+Allow: /*.map$
+
+# Allow images and assets
+Allow: /logo.png
+Allow: /logo.svg
+Allow: /logo-social.png
+Allow: /logo%20black.png
+Allow: /favicon.png
+Allow: /*.jpg$
+Allow: /*.jpeg$
+Allow: /*.png$
+Allow: /*.gif$
+Allow: /*.webp$
+Allow: /*.svg$
