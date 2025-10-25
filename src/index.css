@@ -91,3 +91,200 @@ button.facebook-button .svg-wrapper {
 button.facebook-button:hover svg {
   transform: rotate(90deg);
 }
+
+/* Hero Section Styles */
+.hero-section {
+  background:
+    radial-gradient(1200px 400px at 80% -10%, rgba(198, 160, 82, 0.15), transparent 60%),
+    radial-gradient(900px 500px at 10% 120%, rgba(182, 59, 74, 0.12), transparent 55%),
+    linear-gradient(180deg, #2a4365 0%, #1a365d 100%);
+  padding: 65px 0 100px;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: 
+    radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.1) 1px, transparent 1px),
+    radial-gradient(circle at 80% 80%, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+  background-size: 50px 50px, 30px 30px;
+  pointer-events: none;
+}
+
+.hero-inner {
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  gap: 24px;
+  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+}
+
+.hero-content {
+  padding-right: 20px;
+}
+
+.hero-badge {
+  background: rgba(198, 160, 82, 0.9);
+  border: 1px solid rgba(198, 160, 82, 0.5);
+  color: #ffffff;
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 13px;
+  display: inline-block;
+  margin-bottom: 20px;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 15px rgba(198, 160, 82, 0.3);
+}
+
+.hero-title {
+  font-size: clamp(26px, 5vw, 44px);
+  margin: 0.2em 0;
+  font-weight: 800;
+  line-height: 1.25;
+  color: #ffffff;
+  margin-bottom: 20px;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+.hero-description {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 18px;
+  max-width: 52ch;
+  line-height: 1.6;
+  margin-bottom: 30px;
+}
+
+.hero-buttons {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.btn {
+  padding: 12px 18px;
+  border-radius: 14px;
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
+  transition: all 0.3s ease;
+  font-size: 16px;
+}
+
+.btn-primary {
+  background: #c6a052;
+  border: 1px solid #c6a052;
+  color: #ffffff;
+  box-shadow: 0 4px 15px rgba(198, 160, 82, 0.4);
+}
+
+.btn-primary:hover {
+  background: #b8944f;
+  border-color: #b8944f;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(198, 160, 82, 0.5);
+}
+
+.btn-ghost {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: #ffffff;
+  backdrop-filter: blur(10px);
+}
+
+.btn-ghost:hover {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.5);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(255, 255, 255, 0.1);
+}
+
+.hero-frame {
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px dashed rgba(198, 160, 82, 0.6);
+  border-radius: 22px;
+  padding: 16px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(10px);
+}
+
+.hero-preview {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.hero-ph {
+  aspect-ratio: 1/1;
+  border-radius: 16px;
+  border: 1px solid rgba(198, 160, 82, 0.3);
+  background: rgba(255, 255, 255, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.hero-ph:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 25px rgba(198, 160, 82, 0.3);
+  border-color: #c6a052;
+}
+
+.hero-ph svg {
+  width: 64%;
+  opacity: 0.75;
+  transition: all 0.3s ease;
+}
+
+.hero-ph:hover svg {
+  opacity: 1;
+  transform: scale(1.1);
+}
+
+/* Responsive Design */
+@media (max-width: 900px) {
+  .hero-inner {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+  
+  .hero-content {
+    padding-right: 0;
+    text-align: center;
+  }
+  
+  .hero-preview {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .hero-section {
+    padding: 40px 0 60px;
+  }
+  
+  .hero-preview {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .hero-buttons {
+    justify-content: center;
+  }
+  
+  .btn {
+    padding: 10px 16px;
+    font-size: 14px;
+  }
+}

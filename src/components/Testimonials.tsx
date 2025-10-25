@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { supabase } from '../lib/supabase';
 import type { Testimonial } from '../types/database';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
@@ -23,11 +23,17 @@ export default function Testimonials() {
     const fetchTestimonials = async () => {
       setLoading(true);
       try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 ثواني timeout
+
         const { data, error } = await supabase
           .from('testimonials')
           .select('id, image_url, is_active, created_at')
           .eq('is_active', true)
           .order('created_at', { ascending: false });
+        
+        clearTimeout(timeoutId);
+        
         if (error) throw error;
         setTestimonials(data || []);
       } catch (err) {
@@ -101,7 +107,7 @@ export default function Testimonials() {
   }
 
   return (
-    <section className="bg-black/70 py-12 px-4 md:px-0 border-t border-gray-700 mt-16 overflow-x-hidden"> {/* overflow-x-hidden is important */}
+    <section className="py-12 px-4 md:px-0 border-t border-gray-700 mt-16 overflow-x-hidden" style={{ backgroundColor: '#333333' }}> {/* overflow-x-hidden is important */}
       <div className="max-w-4xl mx-auto">
         <h2 className="text-3xl font-bold text-center text-white mb-10">آراء عملائنا</h2>
 
@@ -163,7 +169,7 @@ export default function Testimonials() {
               >
                 <div className="w-full h-full flex justify-center items-center p-2 md:p-4">
                   <img
-                    src={testimonial.image_url}
+                    src={testimonial.image_url || '/placeholder-testimonial.jpg'}
                     alt={`testimonial by client ${testimonial.id}`}
                     className="max-w-full max-h-full object-contain rounded-2xl shadow-2xl"
                     style={{ background: 'white' }} // Keep background for non-transparent parts of image

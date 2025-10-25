@@ -21,6 +21,7 @@ import AboutUs from './pages/AboutUs';
 import ContactUs from './pages/ContactUs';
 import LoadingScreen from './components/LoadingScreen';
 import StructuredData from './components/StructuredData';
+import Hero from './components/Hero';
 import type { StoreSettings, Banner } from './types/database';
 import { ThemeProvider } from './theme/ThemeContext';
 
@@ -72,24 +73,39 @@ function App() {
     async function initApp() {
       await fetchStoreSettings();
       
-      // Fetch banners
+      // Fetch banners with timeout
+      const bannersController = new AbortController();
+      const bannersTimeoutId = setTimeout(() => bannersController.abort(), 5000);
+      
       const { data: bannersData, error: bannersError } = await supabase
         .from('banners')
         .select('*')
         .order('created_at', { ascending: false });
 
-      // Fetch services for structured data
+      clearTimeout(bannersTimeoutId);
+
+      // Fetch services for structured data with timeout
+      const servicesController = new AbortController();
+      const servicesTimeoutId = setTimeout(() => servicesController.abort(), 5000);
+      
       const { data: servicesData, error: servicesError } = await supabase
         .from('services')
         .select('*')
         .limit(10)
         .order('created_at', { ascending: false });
 
-      // Fetch categories for structured data
+      clearTimeout(servicesTimeoutId);
+
+      // Fetch categories for structured data with timeout
+      const categoriesController = new AbortController();
+      const categoriesTimeoutId = setTimeout(() => categoriesController.abort(), 5000);
+      
       const { data: categoriesData, error: categoriesError } = await supabase
         .from('categories')
         .select('*')
         .order('name');
+
+      clearTimeout(categoriesTimeoutId);
 
       if (isMounted) {
         if (bannersError) {
@@ -157,11 +173,17 @@ function App() {
 
   const fetchStoreSettings = async () => {
     try {
+      // محاولة الاتصال بقاعدة البيانات مع timeout
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 ثواني timeout
+      
       const { data, error } = await supabase
         .from('store_settings')
         .select('*')
         .limit(1)
         .maybeSingle();
+
+      clearTimeout(timeoutId);
 
       if (error) {
         console.error("Error fetching store settings:", error);
@@ -211,7 +233,7 @@ function App() {
         id: '00000000-0000-0000-0000-000000000001',
         store_name: 'Designs4U',
         store_description: 'موقع متخصص في تصميم وتنفيذ خدمات الطباعة والتطريز وشروحات برامج التطريز',
-        logo_url: '/Logo.png',
+        logo_url: '/logo.png',
         meta_title: 'Designs4U - خدمات الطباعة والتطريز',
         meta_description: 'موقع متخصص في تصميم وتنفيذ خدمات الطباعة والتطريز وشروحات برامج التطريز',
         theme_settings: {
@@ -259,6 +281,9 @@ function App() {
         )}
         {window.location.pathname === '/' && stripBanners.length > 0 && (
           <BannerStrip banners={stripBanners} />
+        )}
+        {window.location.pathname === '/' && (
+          <Hero />
         )}
         <MainFade>{children}</MainFade>
         {window.location.pathname === '/' && (

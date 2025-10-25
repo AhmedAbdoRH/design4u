@@ -66,6 +66,9 @@ export default function Header({ storeSettings }: HeaderProps) {
     }
 
     try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 ثواني timeout
+
       // Search in both name and description using ilike for case-insensitive partial matching
       const { data: services, error: servicesError } = await supabase
         .from('services')
@@ -76,6 +79,8 @@ export default function Header({ storeSettings }: HeaderProps) {
         `)
         .or(`title.ilike.%${query}%,description.ilike.%${query}%`)
         .limit(10);
+
+      clearTimeout(timeoutId);
 
       if (servicesError) throw servicesError;
       
@@ -120,10 +125,15 @@ export default function Header({ storeSettings }: HeaderProps) {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 ثواني timeout
+
         const { data, error } = await supabase
           .from('categories')
           .select('id, name, created_at, description')
           .order('name');
+
+        clearTimeout(timeoutId);
 
         if (error) throw error;
         const mapped = (data || []).map((c: any) => ({
@@ -133,6 +143,7 @@ export default function Header({ storeSettings }: HeaderProps) {
           created_at: (c.created_at as string) || ''
         }));
         setCategories(mapped);
+        
         // Fetch subcategories for all categories
         const { data: subs, error: subErr } = await supabase
           .from('subcategories')
@@ -148,6 +159,8 @@ export default function Header({ storeSettings }: HeaderProps) {
         setSubcatsByCategory(grouped);
       } catch (err) {
         console.error('Error fetching categories:', err);
+        setCategories([]);
+        setSubcatsByCategory({});
       } finally {
         setLoadingCategories(false);
       }
@@ -247,8 +260,8 @@ export default function Header({ storeSettings }: HeaderProps) {
 
   return (
     <>
-      <header className="fixed top-0 w-full z-50 bg-black/50 backdrop-blur-md border-b border-white/10">
-        <div className="container mx-auto px-4 py-2 flex items-center justify-between">
+      <header className="fixed top-0 w-full z-50 backdrop-blur-md border-b border-white/10" style={{ backgroundColor: '#1b3459', transform: 'skewX(-2deg)' }}>
+        <div className="container mx-auto px-4 py-2 flex items-center justify-between" style={{ transform: 'skewX(2deg)' }}>
           <div className="flex items-center gap-4">
             {/* Mobile menu button */}
             <button 

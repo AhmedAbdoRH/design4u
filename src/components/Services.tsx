@@ -24,15 +24,22 @@ export default function Services() {
 
   const fetchCategories = async () => {
     try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 ثواني timeout
+
       const { data, error } = await supabase
         .from('categories')
         .select('*')
         .order('name');
 
+      clearTimeout(timeoutId);
+
       if (error) throw error;
       setCategories(data || []);
     } catch (err: any) {
-      setError(err.message);
+      console.error('Error fetching categories:', err);
+      setError('حدث خطأ في تحميل الفئات. يرجى المحاولة مرة أخرى.');
+      setCategories([]);
     }
   };
 
@@ -40,6 +47,10 @@ export default function Services() {
     try {
       setIsLoading(true);
       setError(null);
+
+      // محاولة الاتصال بقاعدة البيانات مع timeout
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 ثواني timeout
 
       // Fetch all services with their categories and subcategories
       const { data, error } = await supabase
@@ -52,6 +63,8 @@ export default function Services() {
         `)
         .order('created_at', { ascending: false });
 
+      clearTimeout(timeoutId);
+
       if (error) throw error;
       setServices(data || []);
 
@@ -62,7 +75,9 @@ export default function Services() {
       setHasFeaturedProducts(hasFeatured);
       setHasBestSellerProducts(hasBestSellers);
     } catch (err: any) {
-      setError(err.message);
+      console.error('Error fetching services:', err);
+      setError('حدث خطأ في تحميل الخدمات. يرجى المحاولة مرة أخرى.');
+      setServices([]);
     } finally {
       setIsLoading(false);
     }
@@ -70,10 +85,15 @@ export default function Services() {
 
   const fetchSubcategories = async () => {
     try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 ثواني timeout
+
       const { data, error } = await supabase
         .from('subcategories')
         .select('id, name_ar, description_ar, category_id')
         .order('name_ar');
+
+      clearTimeout(timeoutId);
 
       if (error) throw error;
       const mapped: Subcategory[] = (data || []).map((sc: any) => ({
@@ -85,6 +105,7 @@ export default function Services() {
       setSubcategories(mapped);
     } catch (err) {
       console.error('Failed to fetch subcategories', err);
+      setSubcategories([]);
     }
   };
 
@@ -165,9 +186,9 @@ export default function Services() {
                 {categories.find(c => c.id === selectedCategory)?.name}
               </>
             ) : selectedCategory ? (
-              categories.find(c => c.id === selectedCategory)?.name || 'خدماتنا'
+              categories.find(c => c.id === selectedCategory)?.name || ''
             ) : (
-              'خدماتنا'
+              ''
             )}
           </h2>
           
