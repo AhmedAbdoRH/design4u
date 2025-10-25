@@ -14,7 +14,7 @@
   
   <!-- About Us Page -->
   <url>
-    <loc>https://alsamah-store.com/about</loc>
+    <loc>https://designs4u.com/about</loc>
     <lastmod>2024-01-01T00:00:00+00:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
@@ -22,7 +22,7 @@
   
   <!-- Contact Us Page -->
   <url>
-    <loc>https://alsamah-store.com/contact</loc>
+    <loc>https://designs4u.com/contact</loc>
     <lastmod>2024-01-01T00:00:00+00:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
@@ -30,7 +30,7 @@
   
   <!-- Main Categories (will be populated dynamically) -->
   <url>
-    <loc>https://alsamah-store.com/category/</loc>
+    <loc>https://designs4u.com/category/</loc>
     <lastmod>2024-01-01T00:00:00+00:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
@@ -38,7 +38,7 @@
   
   <!-- Products (will be populated dynamically) -->
   <url>
-    <loc>https://alsamah-store.com/product/</loc>
+    <loc>https://designs4u.com/product/</loc>
     <lastmod>2024-01-01T00:00:00+00:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
@@ -46,7 +46,7 @@
   
   <!-- Services (will be populated dynamically) -->
   <url>
-    <loc>https://alsamah-store.com/service/</loc>
+    <loc>https://designs4u.com/service/</loc>
     <lastmod>2024-01-01T00:00:00+00:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
@@ -54,7 +54,7 @@
   
   <!-- Subcategories (will be populated dynamically) -->
   <url>
-    <loc>https://alsamah-store.com/subcategory/</loc>
+    <loc>https://designs4u.com/subcategory/</loc>
     <lastmod>2024-01-01T00:00:00+00:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>

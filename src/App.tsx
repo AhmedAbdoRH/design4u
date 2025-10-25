@@ -320,18 +320,30 @@ function App() {
           <meta property="og:url" content="https://designs4u.com/" />
           <meta property="og:title" content={storeSettings?.meta_title || storeSettings?.store_name || 'Designs4U | خدمات الطباعة والتطريز وشروحات برامج التطريز'} />
           <meta property="og:description" content={storeSettings?.meta_description || storeSettings?.store_description || 'Designs4U - موقع متخصص في تصميم وتنفيذ خدمات الطباعة والتطريز وشروحات برامج التطريز. نقدم أفضل خدمات الطباعة على الأقمشة والملابس والتطريز اليدوي والآلي.'} />
-          <meta property="og:image" content={storeSettings?.og_image_url || 'https://designs4u.com/logo.png'} />
+          <meta property="og:image" content={storeSettings?.og_image_url || 'https://designs4u.com/logo-social.png'} />
+          <meta property="og:image:secure_url" content={storeSettings?.og_image_url || 'https://designs4u.com/logo-social.png'} />
           <meta property="og:image:width" content="1200" />
           <meta property="og:image:height" content="630" />
+          <meta property="og:image:alt" content="Designs4U - خدمات الطباعة والتطريز" />
+          <meta property="og:image:type" content="image/png" />
           <meta property="og:site_name" content="Designs4U" />
           <meta property="og:locale" content="ar_EG" />
+          <meta property="og:updated_time" content={new Date().toISOString()} />
           
           {/* Twitter */}
           <meta property="twitter:card" content="summary_large_image" />
           <meta property="twitter:url" content="https://designs4u.com/" />
           <meta property="twitter:title" content={storeSettings?.meta_title || storeSettings?.store_name || 'Designs4U | خدمات الطباعة والتطريز وشروحات برامج التطريز'} />
           <meta property="twitter:description" content={storeSettings?.meta_description || storeSettings?.store_description || 'Designs4U - موقع متخصص في تصميم وتنفيذ خدمات الطباعة والتطريز وشروحات برامج التطريز. نقدم أفضل خدمات الطباعة على الأقمشة والملابس والتطريز اليدوي والآلي.'} />
-          <meta property="twitter:image" content={storeSettings?.og_image_url || 'https://designs4u.com/logo.png'} />
+          <meta property="twitter:image" content={storeSettings?.og_image_url || 'https://designs4u.com/logo-social.png'} />
+          <meta property="twitter:image:alt" content="Designs4U - خدمات الطباعة والتطريز" />
+          <meta name="twitter:site" content="@designs4u" />
+          <meta name="twitter:creator" content="@designs4u" />
+          
+          {/* WhatsApp and Social Media */}
+          <meta property="og:image:url" content={storeSettings?.og_image_url || 'https://designs4u.com/logo-social.png'} />
+          <meta name="image" content={storeSettings?.og_image_url || 'https://designs4u.com/logo-social.png'} />
+          <meta name="thumbnail" content={storeSettings?.og_image_url || 'https://designs4u.com/logo-social.png'} />
           
           {/* Additional SEO Meta Tags */}
           <meta name="geo.region" content="EG" />
