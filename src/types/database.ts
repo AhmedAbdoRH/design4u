@@ -93,8 +93,15 @@ export interface Testimonial {
 // Subcategory type used in the frontend
 export interface Subcategory {
   id: string;
-  name: string; // mapped in UI from name_ar
-  description: string | null; // mapped from description_ar
+  name_ar: string;
+  name_en: string;
+  slug: string;
+  description_ar: string | null;
+  description_en: string | null;
   category_id: string;
-  created_at?: string;
+  image_url: string | null;
+  is_active: boolean;
+  display_order: number;
+  created_at: string;
+  updated_at: string;
 }

@@ -54,7 +54,7 @@ export default function AdminDashboard({ onSettingsUpdate }: AdminDashboardProps
   const [bannersSubTab, setBannersSubTab] = useState<'text' | 'image' | 'strip'>('image');
 
   const [newCategory, setNewCategory] = useState({ name: '', description: '' });
-  const [newSubcategory, setNewSubcategory] = useState({ category_id: '', name_ar: '', description_ar: '' });
+  const [newSubcategory, setNewSubcategory] = useState({ category_id: '', name_ar: '', name_en: '', description_ar: '' });
   const [newService, setNewService] = useState({
     title: '',
     description: '',
@@ -999,10 +999,20 @@ export default function AdminDashboard({ onSettingsUpdate }: AdminDashboardProps
       const { error } = await supabase.from('subcategories').insert([{
         category_id: newSubcategory.category_id,
         name_ar: newSubcategory.name_ar,
+        name_en: newSubcategory.name_en || newSubcategory.name_ar, // Use Arabic name as fallback for English
+        slug: (() => {
+          const sourceName = newSubcategory.name_en || newSubcategory.name_ar;
+          const slug = sourceName.toLowerCase()
+            .replace(/[\u0600-\u06FF\s]+/g, '-') // Convert Arabic characters and spaces to dashes
+            .replace(/[^\w\-]+/g, '') // Remove non-word chars except dashes
+            .replace(/--+/g, '-') // Replace multiple dashes with single dash
+            .replace(/^-+|-+$/g, ''); // Remove leading/trailing dashes
+          return slug || `subcategory-${Date.now()}`;
+        })(),
         description_ar: newSubcategory.description_ar || null,
       }]);
       if (error) throw error;
-      setNewSubcategory({ category_id: '', name_ar: '', description_ar: '' });
+      setNewSubcategory({ category_id: '', name_ar: '', name_en: '', description_ar: '' });
       await fetchData();
       setSuccessMsg('تم إضافة التصنيف الفرعي بنجاح');
     } catch (err: any) {
@@ -1016,8 +1026,9 @@ export default function AdminDashboard({ onSettingsUpdate }: AdminDashboardProps
     setEditingSubcategory(subcat.id);
     setNewSubcategory({
       category_id: subcat.category_id,
-      name_ar: (subcat as any).name_ar || (subcat as any).name || '',
-      description_ar: (subcat as any).description_ar || (subcat as any).description || '',
+      name_ar: subcat.name_ar,
+      name_en: subcat.name_en,
+      description_ar: subcat.description_ar || '',
     });
     const formElement = document.getElementById('subcategory-form');
     formElement?.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -1036,11 +1047,21 @@ export default function AdminDashboard({ onSettingsUpdate }: AdminDashboardProps
         .update({
           category_id: newSubcategory.category_id,
           name_ar: newSubcategory.name_ar,
+          name_en: newSubcategory.name_en || newSubcategory.name_ar,
+          slug: (() => {
+          const sourceName = newSubcategory.name_en || newSubcategory.name_ar;
+          const slug = sourceName.toLowerCase()
+            .replace(/[\u0600-\u06FF\s]+/g, '-') // Convert Arabic characters and spaces to dashes
+            .replace(/[^\w\-]+/g, '') // Remove non-word chars except dashes
+            .replace(/--+/g, '-') // Replace multiple dashes with single dash
+            .replace(/^-+|-+$/g, ''); // Remove leading/trailing dashes
+          return slug || `subcategory-${Date.now()}`;
+        })(),
           description_ar: newSubcategory.description_ar || null,
         })
         .eq('id', editingSubcategory);
       if (error) throw error;
-      setNewSubcategory({ category_id: '', name_ar: '', description_ar: '' });
+      setNewSubcategory({ category_id: '', name_ar: '', name_en: '', description_ar: '' });
       setEditingSubcategory(null);
       await fetchData();
       setSuccessMsg('تم تحديث التصنيف الفرعي بنجاح');
@@ -1853,7 +1874,7 @@ export default function AdminDashboard({ onSettingsUpdate }: AdminDashboardProps
                           {subcategories
                             .filter(sc => sc.category_id === selectedCategory)
                             .map((sc) => (
-                              <option key={sc.id} value={sc.id} className="bg-gray-800 text-white">{(sc as any).name_ar || (sc as any).name}</option>
+                              <option key={sc.id} value={sc.id} className="bg-gray-800 text-white">{sc.name_ar}</option>
                             ))}
                           {selectedCategory && subcategories.filter(sc => sc.category_id === selectedCategory).length === 0 && (
                             <option disabled>لا توجد تصنيفات فرعية لهذا القسم</option>
@@ -2039,6 +2060,14 @@ export default function AdminDashboard({ onSettingsUpdate }: AdminDashboardProps
                           required
                           disabled={isLoading}
                         />
+                        <input
+                          type="text"
+                          placeholder="اسم التصنيف الفرعي (إنجليزي) - اختياري"
+                          value={newSubcategory.name_en}
+                          onChange={(e) => setNewSubcategory({ ...newSubcategory, name_en: e.target.value })}
+                          className="w-full p-3 rounded text-white bg-gray-700 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          disabled={isLoading}
+                        />
                         <textarea
                           placeholder="وصف التصنيف الفرعي (اختياري)"
                           value={newSubcategory.description_ar}
@@ -2077,10 +2106,10 @@ export default function AdminDashboard({ onSettingsUpdate }: AdminDashboardProps
                             className={`p-4 rounded-md bg-gray-900/50 border border-gray-700 flex justify-between items-center transition-all ${editingSubcategory === sc.id ? 'ring-2 ring-blue-500' : ''}`}
                           >
                             <div className="flex-1 overflow-hidden">
-                              <h4 className="font-bold text-white text-lg truncate">{(sc as any).name_ar || (sc as any).name}</h4>
+                              <h4 className="font-bold text-white text-lg truncate">{sc.name_ar}</h4>
                               <div className="text-xs text-gray-400 mb-1">القسم: {categories.find(c => c.id === sc.category_id)?.name || 'غير محدد'}</div>
-                              {(sc as any).description_ar && (
-                                <p className="text-gray-400 text-sm mt-1 line-clamp-2">{(sc as any).description_ar}</p>
+                              {sc.description_ar && (
+                                <p className="text-gray-400 text-sm mt-1 line-clamp-2">{sc.description_ar}</p>
                               )}
                             </div>
                             <div className="flex gap-2">
