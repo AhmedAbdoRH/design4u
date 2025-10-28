@@ -49,7 +49,7 @@ export default function Footer({ storeSettings }: FooterProps) {
                 className="flex items-center gap-2 bg-green-600/20 hover:bg-green-600/30 px-4 py-2 rounded-lg border border-green-500/30 transition-all duration-300"
               >
                 <Phone className="h-4 w-4 text-green-400" />
-                <span className="text-white text-sm font-medium">+20 100 646 4349</span>
+                <span className="text-white text-sm font-medium">اتصل بنا الان</span>
               </a>
               
               <a
@@ -59,7 +59,7 @@ export default function Footer({ storeSettings }: FooterProps) {
                 className="flex items-center gap-2 bg-green-600/20 hover:bg-green-600/30 px-4 py-2 rounded-lg border border-green-500/30 transition-all duration-300"
               >
                 <MessageCircle className="h-4 w-4 text-green-400" />
-                <span className="text-white text-sm font-medium">+20 100 646 4349</span>
+                <span className="text-white text-sm font-medium">تواصل معنا عبر واتساب</span>
               </a>
             </div>
           </div>

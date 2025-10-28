@@ -41,19 +41,28 @@ export default function Hero() {
               حمّل ملفات التطريز الجاهزة، تسوّق منتجات مطبوعة ومطرزة بعناية، أو اطلب تصميمًا خاصًا يُحاك على قياس هويتك.
             </motion.p>
             
-            <motion.div
-              className="hero-buttons"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.5 }}
-            >
-              <Link to="/" className="btn btn-primary">
+            <div className="hero-buttons">
+              <button 
+                onClick={() => {
+                  const productsSection = document.getElementById('products-section');
+                  if (productsSection) {
+                    productsSection.scrollIntoView({ behavior: 'smooth' });
+                  }
+                }} 
+                className="btn btn-primary"
+              >
                 استكشف الآن
-              </Link>
-              <Link to="/contact" className="btn btn-ghost">
+              </button>
+              <a 
+                href="https://wa.me/201006464349?text=مرحباً، أريد طلب تصميم مخصص" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="btn btn-ghost"
+              >
                 اطلب تصميمك
-              </Link>
-            </motion.div>
+              </a>
+            </div>
+
           </motion.div>
 
           {/* الشبكة البصرية */}

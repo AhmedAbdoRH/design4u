@@ -1,9 +1,10 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, useCallback } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Pagination, Autoplay } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
+import 'swiper/css/autoplay';
 
 interface ProductImageSliderProps {
   mainImageUrl: string | null;
@@ -15,29 +16,55 @@ export default function ProductImageSlider({ mainImageUrl, additionalImages }: P
   const [isAutoplayActive, setIsAutoplayActive] = useState(true);
   const [currentIndex, setCurrentIndex] = useState(0);
   const swiperRef = useRef<any>(null);
+  const autoplayTimeout = useRef<NodeJS.Timeout>();
 
   useEffect(() => {
-    // Combine main image with additional images
+    // Combine main image with additional images and remove duplicates
+    const allImages = [];
     if (mainImageUrl) {
-      setImages([mainImageUrl, ...additionalImages]);
-    } else {
-      setImages(additionalImages);
+      allImages.push(mainImageUrl);
     }
+    // Add additional images that aren't the same as main image
+    additionalImages.forEach(img => {
+      if (img && img !== mainImageUrl) {
+        allImages.push(img);
+      }
+    });
+    setImages(allImages);
+    
+    // Cleanup on unmount
+    return () => {
+      if (autoplayTimeout.current) {
+        clearTimeout(autoplayTimeout.current);
+      }
+    };
   }, [mainImageUrl, additionalImages]);
 
   const handleSlideChange = (swiper: any) => {
     setCurrentIndex(swiper.activeIndex);
   };
 
-  const handleTouchStart = () => {
+  const handleTouchStart = useCallback(() => {
     // Pause autoplay on touch interaction
     if (isAutoplayActive) {
       setIsAutoplayActive(false);
       if (swiperRef.current?.autoplay) {
         swiperRef.current.autoplay.stop();
       }
+      
+      // Resume autoplay after 10 seconds of inactivity
+      if (autoplayTimeout.current) {
+        clearTimeout(autoplayTimeout.current);
+      }
+      
+      autoplayTimeout.current = setTimeout(() => {
+        setIsAutoplayActive(true);
+        if (swiperRef.current?.autoplay) {
+          swiperRef.current.autoplay.start();
+        }
+      }, 10000);
     }
-  };
+  }, [isAutoplayActive]);
 
 
   if (images.length === 0) {
@@ -68,19 +95,26 @@ export default function ProductImageSlider({ mainImageUrl, additionalImages }: P
             }
           }
         }}
-        autoplay={isAutoplayActive ? {
-          delay: 5000,
-          disableOnInteraction: true,
+        autoplay={{
+          delay: 3000,
+          disableOnInteraction: false,
           pauseOnMouseEnter: true,
           stopOnLastSlide: false,
           waitForTransition: true,
-        } : false}
+          reverseDirection: false
+        }}
+        loop={true}
+        speed={800}
+        effect='fade'
+        fadeEffect={{
+          crossFade: true
+        }}
         onSwiper={(swiper) => {
           swiperRef.current = swiper;
         }}
         onSlideChange={handleSlideChange}
         onTouchStart={handleTouchStart}
-        className="h-96 rounded-lg overflow-hidden"
+        className="h-96 rounded-lg overflow-hidden w-full"
         touchRatio={1}
         touchAngle={45}
         threshold={5}
@@ -98,7 +132,8 @@ export default function ProductImageSlider({ mainImageUrl, additionalImages }: P
             <img
               src={imageUrl}
               alt={`Product ${index + 1}`}
-              className="w-full h-full object-cover"
+              className="w-full h-full object-contain bg-white"
+              loading="lazy"
             />
           </SwiperSlide>
         ))}
@@ -106,12 +141,6 @@ export default function ProductImageSlider({ mainImageUrl, additionalImages }: P
 
       {/* Custom Navigation Arrows - Hidden */}
 
-      {/* Touch indicator for mobile */}
-      <div className="absolute bottom-2 left-1/2 -translate-x-1/2 z-10 md:hidden">
-        <div className="bg-black/50 text-white text-xs px-2 py-1 rounded backdrop-blur-sm">
-          اسحب للتنقل
-        </div>
-      </div>
 
       {/* Image counter */}
       {images.length > 1 && (

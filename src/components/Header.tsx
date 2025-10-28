@@ -276,7 +276,18 @@ export default function Header({ storeSettings }: HeaderProps) {
               <img 
                 src={storeSettings?.logo_url || '/logo.png'}
                 alt={storeSettings?.store_name || 'Designs4U'} 
-                className="h-16 md:h-20 w-auto"
+                className="h-16 md:h-20 w-auto object-contain"
+                onError={(e) => {
+                  // Fallback to favicon if logo.png fails to load
+                  const target = e.target as HTMLImageElement;
+                  target.src = '/favicon.png';
+                  target.onerror = (e) => {
+                    // Final fallback to SVG if favicon also fails
+                    const finalTarget = e.target as HTMLImageElement;
+                    finalTarget.src = '/logo.svg';
+                    finalTarget.onerror = null;
+                  };
+                }}
               />
             </Link>
           </div>

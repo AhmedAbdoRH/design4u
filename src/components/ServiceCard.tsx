@@ -1,25 +1,41 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { MessageCircle, Sparkles, ShoppingCart, Check } from 'lucide-react';
 import { useCart } from '../contexts/CartContext';
 import type { ProductSize } from '../types/database';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Autoplay, Pagination } from 'swiper/modules';
+import 'swiper/css';
+import 'swiper/css/pagination';
 
 interface ProductCardProps {
   title: string;
   description: string;
-  imageUrl: string;
+  imageUrl: string | string[];
   price?: number | null; // Make price optional and number type
   salePrice?: number | null; // Make salePrice optional and number type
   id: string | number;
   has_multiple_sizes?: boolean;
   sizes?: ProductSize[];
+  gallery?: string[]; // Add gallery images for the carousel
 }
-
 
 // Define the light gold color using the hex code from the Hero component
 const lightGold = '#FFD700'; // This is standard gold color
 
-export default function ProductCard({ title, description, imageUrl, price, salePrice, id, has_multiple_sizes, sizes }: ProductCardProps) {
+export default function ProductCard({ title, description, imageUrl, price, salePrice, id, has_multiple_sizes, sizes, gallery = [] }: ProductCardProps) {
+  // Convert single image to array for consistent handling
+  const images = useMemo(() => {
+    if (Array.isArray(imageUrl)) return imageUrl;
+    return imageUrl ? [imageUrl] : [];
+  }, [imageUrl]);
+
+  // Add gallery images if available
+  const allImages = useMemo(() => {
+    const mainImages = images.filter(Boolean);
+    const additionalImages = Array.isArray(gallery) ? gallery.filter(Boolean) : [];
+    return [...new Set([...mainImages, ...additionalImages])]; // Remove duplicates
+  }, [images, gallery]);
 
   const { addToCart } = useCart();
   const [isAdding, setIsAdding] = useState(false);
@@ -161,16 +177,47 @@ export default function ProductCard({ title, description, imageUrl, price, saleP
   return (
     <div className="group relative bg-gray-200 rounded-xl border border-gray-300 overflow-hidden transition-all duration-150 hover:scale-105 hover:bg-gray-300">
       <Link to={`/product/${id}`} className="block">
-        <div className="relative aspect-[4/3] w-full">
-          <img
-            src={imageUrl || '/placeholder-product.jpg'}
-            alt={title}
-            className="absolute inset-0 w-full h-full object-cover"
-            onError={(e) => {
-              const target = e.target as HTMLImageElement;
-              target.src = '/placeholder-product.jpg';
-            }}
-          />
+        <div className="relative aspect-[4/3] w-full overflow-hidden">
+          {allImages.length > 0 ? (
+            <Swiper
+              modules={[Pagination, Autoplay]}
+              spaceBetween={0}
+              slidesPerView={1}
+              loop={allImages.length > 1}
+              autoplay={{
+                delay: 3000,
+                disableOnInteraction: false,
+                pauseOnMouseEnter: true
+              }}
+              pagination={{
+                clickable: true,
+                bulletClass: 'swiper-pagination-bullet !bg-white/70 !opacity-100',
+                bulletActiveClass: 'swiper-pagination-bullet-active !bg-white',
+                renderBullet: (index, className) => {
+                  return `<span class="${className} w-2 h-2 mx-1 rounded-full"></span>`;
+                }
+              }}
+              className="w-full h-full"
+            >
+              {allImages.map((img, index) => (
+                <SwiperSlide key={index} className="w-full h-full">
+                  <img
+                    src={img}
+                    alt={`${title} - صورة ${index + 1}`}
+                    className="w-full h-full object-cover"
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement;
+                      target.src = '/placeholder-product.jpg';
+                    }}
+                  />
+                </SwiperSlide>
+              ))}
+            </Swiper>
+          ) : (
+            <div className="w-full h-full bg-gray-200 flex items-center justify-center">
+              <span className="text-gray-400">لا توجد صورة</span>
+            </div>
+          )}
           <div className="absolute inset-0 bg-gradient-to-t from-primary/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-150" />
         </div>
         <div className="p-6">

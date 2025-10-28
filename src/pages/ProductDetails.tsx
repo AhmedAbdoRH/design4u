@@ -274,14 +274,14 @@ export default function ProductDetails() {
                   <div className="flex flex-col items-end">
                     {item.has_multiple_sizes && item.sizes && item.sizes.length > 0 && item.sizes[0].sale_price ? (
                       <>
-                        <span className="text-xs md:text-sm text-[#FFD700]">{item.sizes[0].sale_price} ج</span>
+                        <span className="text-xs md:text-sm text-[#D4AF37] font-bold">{item.sizes[0].sale_price} ج</span>
                         <span className="text-xs text-gray-400 line-through">{item.sizes[0].price} ج</span>
                       </>
                     ) : item.has_multiple_sizes && item.sizes && item.sizes.length > 0 ? (
                       <span className="text-xs md:text-sm text-accent">{item.sizes[0].price} ج</span>
                     ) : item.sale_price ? (
                       <>
-                        <span className="text-xs md:text-sm text-[#FFD700]">{item.sale_price} ج</span>
+                        <span className="text-xs md:text-sm text-[#D4AF37] font-bold">{item.sale_price} ج</span>
                         <span className="text-xs text-gray-400 line-through">{item.price} ج</span>
                       </>
                     ) : (
