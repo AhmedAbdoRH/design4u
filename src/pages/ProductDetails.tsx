@@ -93,7 +93,8 @@ export default function ProductDetails() {
 
   // Extracted background styles for reuse
   const backgroundStyles = {
-        background: '#2a2a2a !important',
+    // light gray / off-white background for product page
+    background: '#f7f7f9',
     backgroundSize: 'cover',
     backgroundRepeat: 'no-repeat',
     backgroundAttachment: 'fixed',
@@ -105,7 +106,7 @@ export default function ProductDetails() {
         className="min-h-screen flex items-center justify-center pt-24"
         style={backgroundStyles}
       >
-        <div className="text-xl text-secondary">جاري التحميل...</div>
+        <div className="text-xl text-gray-700">جاري التحميل...</div>
       </div>
     );
   }
@@ -116,7 +117,7 @@ export default function ProductDetails() {
         className="min-h-screen flex flex-col items-center justify-center gap-4 pt-24"
         style={backgroundStyles}
       >
-        <div className="text-xl text-secondary">{error || 'المنتج غير موجود'}</div>
+        <div className="text-xl text-gray-700">{error || 'المنتج غير موجود'}</div>
         <button
           onClick={() => navigate('/')}
           className="bg-secondary text-primary px-6 py-2 rounded-lg hover:bg-opacity-90"
@@ -128,10 +129,10 @@ export default function ProductDetails() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col pt-24 relative" style={backgroundStyles}>
-      <div className="flex items-center justify-center flex-grow py-8">
+    <div className="min-h-screen flex flex-col pt-24 relative bg-white">
+      <div className="flex items-center justify-center flex-grow py-8 bg-white">
         <div className="container mx-auto px-4 max-w-4xl lg:max-w-5xl">
-          <div className="rounded-lg shadow-lg overflow-hidden glass">
+          <div className="rounded-lg shadow-lg overflow-hidden bg-white">
             <div className="md:flex">
               <div className="md:w-1/2">
                 <ProductImageSlider 
@@ -140,14 +141,14 @@ export default function ProductDetails() {
                 />
               </div>
               <div className="md:w-1/2 p-8">
-                <h1 className="text-3xl font-bold mb-4 text-secondary text-right">{service.title}</h1>
-                <p className="text-white text-opacity-88 mb-6 text-lg leading-relaxed text-right" style={{ whiteSpace: 'pre-wrap' }}>
+                <h1 className="text-3xl font-bold mb-4 text-gray-800 text-right">{service.title}</h1>
+                <p className="text-gray-700 mb-6 text-lg leading-relaxed text-right" style={{ whiteSpace: 'pre-wrap' }}>
   {service.description}
 </p>
-                <div className="border-t border-gray-700 pt-6 mb-6">
+                <div className="border-t border-gray-200 pt-6 mb-6">
                   {service.has_multiple_sizes && service.sizes && service.sizes.length > 0 && (
                     <div className="mb-4">
-                      <h4 className="text-lg font-bold mb-2 text-secondary text-right">المقاسات المتوفرة</h4>
+                      <h4 className="text-lg font-bold mb-2 text-gray-800 text-right">المقاسات المتوفرة</h4>
                       <div className="flex flex-wrap gap-2 justify-end">
                         {service.sizes.map((size) => (
                           <button
@@ -155,7 +156,7 @@ export default function ProductDetails() {
                             onClick={() => setSelectedSize(size)}
                             className={`px-4 py-2 rounded-lg font-bold transition-colors ${ selectedSize?.id === size.id
                                 ? 'bg-secondary text-primary'
-                                : 'bg-gray-700 text-white hover:bg-gray-600'}`}
+                                : 'bg-gray-200 text-gray-800 hover:bg-gray-300'}`}
                           >
                             {size.size}
                           </button>
@@ -238,7 +239,7 @@ export default function ProductDetails() {
       {/* Suggested Products */}
       {suggested.length > 0 && (
         <div className="container mx-auto px-4 max-w-4xl lg:max-w-5xl mb-8">
-          <h2 className="text-xl font-bold text-secondary mb-4 text-right">متوفر لدينا ايضا</h2>
+          <h2 className="text-xl font-bold text-gray-800 mb-4 text-right">متوفر لدينا ايضا</h2>
           <div
             className="flex gap-4 overflow-x-auto pb-2 hide-scrollbar"
             style={{ WebkitOverflowScrolling: 'touch' }}
@@ -256,7 +257,7 @@ export default function ProductDetails() {
                   className="
                     min-w-[160px] max-w-[180px]
                     md:min-w-[220px] md:max-w-[260px]
-                    bg-white/10 rounded-lg shadow p-2 flex-shrink-0 cursor-pointer hover:scale-105 transition
+                    bg-white rounded-lg shadow p-2 flex-shrink-0 cursor-pointer hover:scale-105 transition border border-gray-100
                   "
                   onClick={() => navigate(`/product/${item.id}`)}
                 >
@@ -269,7 +270,7 @@ export default function ProductDetails() {
                       target.src = '/placeholder-product.jpg';
                     }}
                   />
-                  <div className="mt-2 text-sm md:text-base font-bold text-secondary truncate text-right">{item.title}</div>
+                  <div className="mt-2 text-sm md:text-base font-bold text-gray-800 truncate text-right">{item.title}</div>
                   <div className="flex flex-col items-end">
                     {item.has_multiple_sizes && item.sizes && item.sizes.length > 0 && item.sizes[0].sale_price ? (
                       <>

@@ -20,7 +20,7 @@ const ServiceCardDirect = ({ service }: { service: Service }) => {
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: 24 }}
       transition={{ duration: 0.28, ease: 'easeOut' }}
-      className="group relative bg-secondary/5 backdrop-blur-md rounded-xl border border-secondary/20 overflow-hidden transition-all duration-150 hover:scale-105 hover:bg-secondary/10 cursor-pointer"
+      className="group relative bg-gray-200 rounded-xl border border-gray-300 overflow-hidden transition-all duration-150 hover:scale-105 hover:bg-gray-200/80 cursor-pointer"
       onClick={() => navigate(`/service/${service.id}`)}
     >
       <div className="relative aspect-[4/3] w-full">
@@ -32,7 +32,10 @@ const ServiceCardDirect = ({ service }: { service: Service }) => {
         />
       </div>
       <div className="p-4 text-right">
-        <h3 className="text-lg font-bold mb-2 text-header truncate">{service.title}</h3>
+        <h3 className="text-lg font-bold mb-1 text-header truncate">{service.title}</h3>
+        <p className="text-sm text-gray-700 whitespace-nowrap overflow-hidden text-ellipsis mb-2">
+          {(service as any)?.description ? ((service as any).description as string).split(/\r?\n/)[0] : ''}
+        </p>
         <div className="flex flex-col items-end font-bold">
           {/* Simplified price display logic, directly from ProductDetails.tsx */}
           {service.has_multiple_sizes && service.sizes && service.sizes.length > 0 ? (
@@ -210,8 +213,8 @@ export default function Products() {
 
   if (isLoading) {
     return (
-      <div className="py-16" style={{backgroundColor: '#2a2a2a'}}>
-        <div className="container mx-auto px-4 text-center text-white">
+      <div className="py-16 bg-white">
+        <div className="container mx-auto px-4 text-center text-gray-800">
           جاري تحميل الخدمات...
         </div>
       </div>
@@ -220,8 +223,8 @@ export default function Products() {
 
   if (error) {
     return (
-      <div className="py-16" style={{backgroundColor: '#2a2a2a'}}>
-        <div className="container mx-auto px-4 text-center text-red-500">
+      <div className="py-16 bg-white">
+        <div className="container mx-auto px-4 text-center text-red-600">
           حدث خطأ أثناء تحميل الخدمات: {error}
         </div>
       </div>
@@ -229,7 +232,7 @@ export default function Products() {
   }
 
   return (
-    <section className="py-16" style={{backgroundColor: '#2a2a2a'}} id="services">
+    <section className="py-16 bg-white" id="services">
       <motion.div
         className="container mx-auto px-4 bg-white/5 backdrop-blur-xl rounded-2xl p-8 border border-white/10 shadow-2xl shadow-black/40"
         initial="hidden"

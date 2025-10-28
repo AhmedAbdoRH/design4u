@@ -159,7 +159,7 @@ export default function ProductCard({ title, description, imageUrl, price, saleP
   };
 
   return (
-    <div className="group relative bg-secondary/5 backdrop-blur-md rounded-xl border border-secondary/20 overflow-hidden transition-all duration-150 hover:scale-105 hover:bg-secondary/10">
+    <div className="group relative bg-gray-200 rounded-xl border border-gray-300 overflow-hidden transition-all duration-150 hover:scale-105 hover:bg-gray-300">
       <Link to={`/product/${id}`} className="block">
         <div className="relative aspect-[4/3] w-full">
           <img
@@ -174,10 +174,13 @@ export default function ProductCard({ title, description, imageUrl, price, saleP
           <div className="absolute inset-0 bg-gradient-to-t from-primary/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-150" />
         </div>
         <div className="p-6">
-          <h3 className="text-xl font-bold mb-2 text-header flex items-center gap-2">
+          <h3 className="text-xl font-bold mb-1 text-header flex items-center gap-2">
             {title}
             <Sparkles className={`h-4 w-4 text-gold-dark`} />
           </h3>
+          <p className="text-sm text-gray-700 whitespace-nowrap overflow-hidden text-ellipsis">
+            {description ? description.split(/\r?\n/)[0] : ''}
+          </p>
         </div>
       </Link>
       
@@ -232,10 +235,10 @@ export default function ProductCard({ title, description, imageUrl, price, saleP
             <button
               onClick={handleAddToCart}
               disabled={isAdding || isAdded}
-              className={`flex items-center justify-center p-2 rounded-lg transition-all duration-300 ${ 
+              className={`flex items-center justify-center p-2 rounded-lg shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-300 ${ 
                 isAdded 
                   ? 'bg-green-500 text-white' 
-                  : `bg-[${lightGold}]/90 hover:bg-[${lightGold}] text-secondary`
+                  : 'bg-gradient-to-r from-[#345e8f] to-[#1b3459] text-white ring-1 ring-black/10'
               } ${isAdding ? 'opacity-75' : ''}`}
               title={isAdded ? 'تمت الإضافة' : 'أضف إلى السلة'}
             >
@@ -250,7 +253,7 @@ export default function ProductCard({ title, description, imageUrl, price, saleP
             
             <button
               onClick={handleContactClick}
-              className={`bg-[${lightGold}]/90 hover:bg-yellow-500 text-secondary px-4 py-2 rounded-lg transition-colors duration-300 flex items-center gap-2 backdrop-blur-sm`}
+              className={`bg-gradient-to-r from-[#d1a123] to-[#b8860b] text-white font-bold px-4 py-2 rounded-lg shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-300 flex items-center gap-2 ring-1 ring-black/10`}
             >
               <MessageCircle className="h-5 w-5" />
               <span className="hidden sm:inline">اطلب الآن</span>

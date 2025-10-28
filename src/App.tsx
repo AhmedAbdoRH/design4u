@@ -307,7 +307,14 @@ function App() {
     <ThemeProvider>
       <CartProvider>
         <Helmet>
-          <title>{storeSettings?.meta_title || storeSettings?.store_name || 'Designs4U | خدمات الطباعة والتطريز وشروحات برامج التطريز'}</title>
+          {(() => {
+            const rawTitle = (storeSettings as any)?.meta_title || (storeSettings as any)?.store_name || '';
+            const fallbackTitle = 'Designs4U | خدمات الطباعة والتطريز وشروحات برامج التطريز';
+            const normalizedTitle = /السماح\s*للمفروشات/i.test(rawTitle) ? fallbackTitle : (rawTitle || fallbackTitle);
+            return (
+              <title>{normalizedTitle}</title>
+            );
+          })()}
           <meta name="description" content={storeSettings?.meta_description || storeSettings?.store_description || 'Designs4U - موقع متخصص في تصميم وتنفيذ خدمات الطباعة والتطريز وشروحات برامج التطريز. نقدم أفضل خدمات الطباعة على الأقمشة والملابس والتطريز اليدوي والآلي.'} />
           <meta name="keywords" content={storeSettings?.keywords ? storeSettings.keywords.join(', ') : 'Designs4U, طباعة, تطريز, خدمات طباعة, خدمات تطريز, شروحات برامج التطريز, طباعة على القماش, طباعة على الملابس, تطريز يدوي, تطريز آلي, مصر'} />
           <meta name="author" content="Designs4U" />
@@ -318,7 +325,7 @@ function App() {
           {/* Open Graph / Facebook */}
           <meta property="og:type" content="website" />
           <meta property="og:url" content="https://designs4u.com/" />
-          <meta property="og:title" content={storeSettings?.meta_title || storeSettings?.store_name || 'Designs4U | خدمات الطباعة والتطريز وشروحات برامج التطريز'} />
+          <meta property="og:title" content={(storeSettings as any)?.meta_title && !/السماح\s*للمفروشات/i.test((storeSettings as any)?.meta_title) ? (storeSettings as any)?.meta_title : ((storeSettings as any)?.store_name && !/السماح\s*للمفروشات/i.test((storeSettings as any)?.store_name) ? (storeSettings as any)?.store_name : 'Designs4U | خدمات الطباعة والتطريز وشروحات برامج التطريز')} />
           <meta property="og:description" content={storeSettings?.meta_description || storeSettings?.store_description || 'Designs4U - موقع متخصص في تصميم وتنفيذ خدمات الطباعة والتطريز وشروحات برامج التطريز. نقدم أفضل خدمات الطباعة على الأقمشة والملابس والتطريز اليدوي والآلي.'} />
           <meta property="og:image" content={storeSettings?.og_image_url || 'https://designs4u.com/logo-social.png'} />
           <meta property="og:image:secure_url" content={storeSettings?.og_image_url || 'https://designs4u.com/logo-social.png'} />
@@ -333,7 +340,7 @@ function App() {
           {/* Twitter */}
           <meta property="twitter:card" content="summary_large_image" />
           <meta property="twitter:url" content="https://designs4u.com/" />
-          <meta property="twitter:title" content={storeSettings?.meta_title || storeSettings?.store_name || 'Designs4U | خدمات الطباعة والتطريز وشروحات برامج التطريز'} />
+          <meta property="twitter:title" content={(storeSettings as any)?.meta_title && !/السماح\s*للمفروشات/i.test((storeSettings as any)?.meta_title) ? (storeSettings as any)?.meta_title : ((storeSettings as any)?.store_name && !/السماح\s*للمفروشات/i.test((storeSettings as any)?.store_name) ? (storeSettings as any)?.store_name : 'Designs4U | خدمات الطباعة والتطريز وشروحات برامج التطريز')} />
           <meta property="twitter:description" content={storeSettings?.meta_description || storeSettings?.store_description || 'Designs4U - موقع متخصص في تصميم وتنفيذ خدمات الطباعة والتطريز وشروحات برامج التطريز. نقدم أفضل خدمات الطباعة على الأقمشة والملابس والتطريز اليدوي والآلي.'} />
           <meta property="twitter:image" content={storeSettings?.og_image_url || 'https://designs4u.com/logo-social.png'} />
           <meta property="twitter:image:alt" content="Designs4U - خدمات الطباعة والتطريز" />

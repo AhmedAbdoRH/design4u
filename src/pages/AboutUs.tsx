@@ -17,7 +17,7 @@ export default function AboutUs() {
           {/* Header */}
           <div className="text-center mb-16">
             <h1 className="text-4xl md:text-6xl font-bold text-white mb-6">
-              من نحن - <span className="text-header">Designs4U</span>
+              من نحن - <span className="text-gold-dark">Designs4U</span>
             </h1>
             <p className="text-xl text-white/80 max-w-3xl mx-auto leading-relaxed">
               Designs4U - موقع متخصص في تصميم وتنفيذ خدمات الطباعة والتطريز وشروحات برامج التطريز. نقدم أفضل خدمات الطباعة على الأقمشة والملابس والتطريز اليدوي والآلي بأسعار تنافسية وجودة عالية.
@@ -28,7 +28,7 @@ export default function AboutUs() {
           <div className="grid lg:grid-cols-2 gap-12 mb-16">
             {/* Our Story */}
             <div className="bg-white/5 backdrop-blur-sm rounded-2xl p-8 border border-white/10">
-              <h2 className="text-3xl font-bold text-header mb-6">قصتنا</h2>
+              <h2 className="text-3xl font-bold text-gold-dark mb-6">قصتنا</h2>
               <div className="space-y-4 text-white/90 leading-relaxed">
                 <p>
                   بدأت رحلة <strong>Designs4U</strong> بفكرة بسيطة: 
@@ -50,21 +50,21 @@ export default function AboutUs() {
               <h2 className="text-3xl font-bold text-[#FFD700] mb-6">قيمنا</h2>
               <div className="space-y-6">
                 <div className="flex items-start gap-4">
-                  <Award className="h-8 w-8 text-header mt-1 flex-shrink-0" />
+                  <Award className="h-8 w-8 text-gold-dark mt-1 flex-shrink-0" />
                   <div>
                     <h3 className="text-xl font-semibold text-white mb-2">الجودة</h3>
                     <p className="text-white/80">نقدم منتجات عالية الجودة من أفضل المواد الخام</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-4">
-                  <Users className="h-8 w-8 text-header mt-1 flex-shrink-0" />
+                  <Users className="h-8 w-8 text-gold-dark mt-1 flex-shrink-0" />
                   <div>
                     <h3 className="text-xl font-semibold text-white mb-2">خدمة العملاء</h3>
                     <p className="text-white/80">نضع رضا العملاء في المقام الأول</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-4">
-                  <Star className="h-8 w-8 text-header mt-1 flex-shrink-0" />
+                  <Star className="h-8 w-8 text-gold-dark mt-1 flex-shrink-0" />
                   <div>
                     <h3 className="text-xl font-semibold text-white mb-2">التميز</h3>
                     <p className="text-white/80">نسعى دائماً للتميز في كل ما نقدمه</p>
@@ -77,30 +77,30 @@ export default function AboutUs() {
           {/* Statistics */}
           <div className="grid md:grid-cols-4 gap-8 mb-16">
             <div className="text-center bg-white/5 backdrop-blur-sm rounded-xl p-6 border border-white/10">
-              <div className="text-4xl font-bold text-header mb-2">25+</div>
+              <div className="text-4xl font-bold text-gold-dark mb-2">25+</div>
               <div className="text-white/80">سنة خبرة</div>
             </div>
             <div className="text-center bg-white/5 backdrop-blur-sm rounded-xl p-6 border border-white/10">
-              <div className="text-4xl font-bold text-header mb-2">1000+</div>
+              <div className="text-4xl font-bold text-gold-dark mb-2">1000+</div>
               <div className="text-white/80">عميل راضي</div>
             </div>
             <div className="text-center bg-white/5 backdrop-blur-sm rounded-xl p-6 border border-white/10">
-              <div className="text-4xl font-bold text-header mb-2">5000+</div>
+              <div className="text-4xl font-bold text-gold-dark mb-2">5000+</div>
               <div className="text-white/80">منتج متاح</div>
             </div>
             <div className="text-center bg-white/5 backdrop-blur-sm rounded-xl p-6 border border-white/10">
-              <div className="text-4xl font-bold text-header mb-2">2</div>
+              <div className="text-4xl font-bold text-gold-dark mb-2">2</div>
               <div className="text-white/80">فرع</div>
             </div>
           </div>
 
           {/* Our Branches */}
           <div className="bg-white/5 backdrop-blur-sm rounded-2xl p-8 border border-white/10 mb-16">
-            <h2 className="text-3xl font-bold text-header mb-8 text-center">فروعنا</h2>
+            <h2 className="text-3xl font-bold text-gold-dark mb-8 text-center">فروعنا</h2>
             <div className="grid md:grid-cols-2 gap-8">
               <div className="bg-white/5 rounded-xl p-6">
                 <div className="flex items-start gap-4 mb-4">
-                  <MapPin className="h-6 w-6 text-header mt-1 flex-shrink-0" />
+                  <MapPin className="h-6 w-6 text-gold-dark mt-1 flex-shrink-0" />
                   <div>
                     <h3 className="text-xl font-semibold text-white mb-2">تواصل معنا</h3>
                     <p className="text-white/80 mb-4">
@@ -116,7 +116,7 @@ export default function AboutUs() {
 
               <div className="bg-white/5 rounded-xl p-6">
                 <div className="flex items-start gap-4 mb-4">
-                  <MapPin className="h-6 w-6 text-header mt-1 flex-shrink-0" />
+                  <MapPin className="h-6 w-6 text-gold-dark mt-1 flex-shrink-0" />
                   <div>
                     <h3 className="text-xl font-semibold text-white mb-2">واتساب</h3>
                     <p className="text-white/80 mb-4">
@@ -134,9 +134,9 @@ export default function AboutUs() {
 
           {/* Working Hours */}
           <div className="bg-white/5 backdrop-blur-sm rounded-2xl p-8 border border-white/10 text-center">
-            <h2 className="text-3xl font-bold text-header mb-6">ساعات العمل</h2>
+            <h2 className="text-3xl font-bold text-gold-dark mb-6">ساعات العمل</h2>
             <div className="flex items-center justify-center gap-4 mb-4">
-              <Clock className="h-6 w-6 text-header" />
+              <Clock className="h-6 w-6 text-gold-dark" />
               <span className="text-xl text-white">يومياً من 9:00 صباحاً إلى 10:00 مساءً</span>
             </div>
             <p className="text-white/80">

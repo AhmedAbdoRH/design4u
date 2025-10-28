@@ -17,7 +17,7 @@ export default function ContactUs() {
           {/* Header */}
           <div className="text-center mb-16">
             <h1 className="text-4xl md:text-6xl font-bold text-white mb-6">
-              <span className="text-header">اتصل بنا</span> - Designs4U
+              <span className="text-gold-dark">اتصل بنا</span> - Designs4U
             </h1>
             <p className="text-xl text-white/80 max-w-3xl mx-auto leading-relaxed">
               نحن هنا لخدمتكم! تواصلوا معنا للحصول على أفضل خدمات الطباعة والتطريز وشروحات برامج التطريز. فريقنا متاح لمساعدتكم في اختيار الخدمات المناسبة.
@@ -29,7 +29,7 @@ export default function ContactUs() {
             {/* Contact Info */}
             <div className="space-y-8">
               <div className="bg-white/5 backdrop-blur-sm rounded-2xl p-8 border border-white/10">
-                <h2 className="text-3xl font-bold text-header mb-6">معلومات الاتصال</h2>
+                <h2 className="text-3xl font-bold text-gold-dark mb-6">معلومات الاتصال</h2>
                 
                 <div className="space-y-6">
                   <div className="flex items-center gap-4">
@@ -64,17 +64,17 @@ export default function ContactUs() {
 
               {/* Working Hours */}
               <div className="bg-white/5 backdrop-blur-sm rounded-2xl p-8 border border-white/10">
-                <h2 className="text-3xl font-bold text-header mb-6">ساعات العمل</h2>
+                <h2 className="text-3xl font-bold text-gold-dark mb-6">ساعات العمل</h2>
                 <div className="space-y-4">
                   <div className="flex items-center gap-4">
-                    <Clock className="h-6 w-6 text-header" />
+                    <Clock className="h-6 w-6 text-gold-dark" />
                     <div>
                       <h3 className="text-lg font-semibold text-white">الأحد - الخميس</h3>
                       <p className="text-white/80">9:00 صباحاً - 10:00 مساءً</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-4">
-                    <Clock className="h-6 w-6 text-header" />
+                    <Clock className="h-6 w-6 text-gold-dark" />
                     <div>
                       <h3 className="text-lg font-semibold text-white">الجمعة - السبت</h3>
                       <p className="text-white/80">9:00 صباحاً - 10:00 مساءً</p>
@@ -90,7 +90,7 @@ export default function ContactUs() {
 
           {/* Services */}
           <div className="bg-white/5 backdrop-blur-sm rounded-2xl p-8 border border-white/10 text-center">
-            <h2 className="text-3xl font-bold text-header mb-6">خدماتنا</h2>
+            <h2 className="text-3xl font-bold text-gold-dark mb-6">خدماتنا</h2>
             <div className="grid md:grid-cols-3 gap-6">
               <div className="bg-white/5 rounded-xl p-6">
                 <h3 className="text-xl font-semibold text-white mb-2">استشارة مجانية</h3>
