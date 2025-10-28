@@ -8,6 +8,8 @@ export default {
         secondary: '#ffffff',   // أبيض نقي
         accent: '#d99323',     // ذهبي لامع
         'accent-light': '#e0a745', // ذهبي أفتح
+        header: '#1b3459', // لون الهيدر المطلوب توحيده
+        'gold-dark': '#b8860b', // أصفر داكن للنصوص
       },
       fontFamily: {
         cairo: ['Cairo', 'sans-serif'],

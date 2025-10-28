@@ -112,7 +112,7 @@ export default function AdminDashboard({ onSettingsUpdate }: AdminDashboardProps
     try {
       const { data, error } = await supabase
         .from('testimonials')
-        .select('*')
+        .select('id, image_url, customer_image_url, is_active, created_at')
         .order('created_at', { ascending: false });
       if (error) throw error;
       setTestimonials(data || []);
@@ -1314,10 +1314,10 @@ export default function AdminDashboard({ onSettingsUpdate }: AdminDashboardProps
         
         const { data: { publicUrl } } = supabase.storage.from('testimonials').getPublicUrl(fileName);
         
-        // Insert the new testimonial with the public URL
+        // Insert the new testimonial with the public URL (use customer_image_url, fallback to image_url for legacy)
         const { error: insertError } = await supabase
             .from('testimonials')
-            .insert([{ image_url: publicUrl, is_active: true }]); // Assuming is_active is true by default
+            .insert([{ customer_image_url: publicUrl, image_url: publicUrl, is_active: true }]);
         if (insertError) throw insertError;
         
         setNewTestimonial({ image_url: '' }); // Reset form
@@ -1549,7 +1549,7 @@ export default function AdminDashboard({ onSettingsUpdate }: AdminDashboardProps
                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
                             {testimonials.map((t: Testimonial) => (
                                 <div key={t.id} className="relative group border border-gray-700 rounded-lg overflow-hidden">
-                                    <img src={t.image_url} alt="testimonial" className="w-full h-40 object-cover bg-white" />
+                                    <img src={t.image_url || (t as any).customer_image_url || '/placeholder-testimonial.jpg'} alt="testimonial" className="w-full h-40 object-cover bg-white" />
                                     <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
                                         <button
                                             className="bg-red-600 text-white p-2 rounded-full hover:bg-red-700 transition-colors"

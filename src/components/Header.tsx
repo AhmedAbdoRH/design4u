@@ -297,7 +297,7 @@ export default function Header({ storeSettings }: HeaderProps) {
                 }}
                 onBlur={() => setTimeout(() => setIsSearchFocused(false), 200)}
                 placeholder="ابحث عن خدمة..."
-                className="w-full bg-white/10 text-white placeholder-white/50 rounded-full py-2 pr-10 pl-4 focus:outline-none focus:ring-2 focus:ring-[#FFD700] transition-all duration-300"
+                className="w-full bg-white/10 text-white placeholder-white/50 rounded-full py-2 pr-10 pl-4 focus:outline-none focus:ring-2 focus:ring-header transition-all duration-300"
               />
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-white/50" />
               {searchQuery && (
@@ -369,7 +369,7 @@ export default function Header({ storeSettings }: HeaderProps) {
                   (document.activeElement as HTMLElement).blur();
                 }
               }}
-              className="md:hidden p-2 text-white hover:text-[#FFD700] transition-colors"
+              className="md:hidden p-2 text-white hover:text-header transition-colors"
               aria-label="بحث"
             >
               <Search className="h-6 w-6" />
@@ -378,14 +378,14 @@ export default function Header({ storeSettings }: HeaderProps) {
             <nav>
               <ul className="flex gap-4 md:gap-6 items-center">
                 <li className="hidden md:block">
-                  <Link to="/" className="text-white hover:text-[#FFD700] transition-colors duration-300">
+                  <Link to="/" className="text-white hover:text-header transition-colors duration-300">
                     الرئيسية
                   </Link>
                 </li>
                 
                 {/* Desktop Categories Dropdown */}
                 <li className="hidden md:block relative group">
-                  <button className="text-white hover:text-[#FFD700] transition-colors duration-300 flex items-center gap-1">
+                  <button className="text-white hover:text-header transition-colors duration-300 flex items-center gap-1">
                     الأقسام
                     <ChevronDown className="h-4 w-4" />
                   </button>
@@ -469,7 +469,7 @@ export default function Header({ storeSettings }: HeaderProps) {
                 </li>
                 
                 <li>
-                  <a href="#contact" className="text-white hover:text-[#FFD700] transition-colors duration-300">
+                  <a href="#contact" className="text-white hover:text-header transition-colors duration-300">
                     تواصل معنا
                   </a>
                 </li>
@@ -625,7 +625,7 @@ export default function Header({ storeSettings }: HeaderProps) {
                     value={searchQuery}
                     onChange={(e) => handleSearch(e.target.value)}
                     placeholder="ابحث عن خدمة..."
-                    className="w-full bg-white/10 text-white placeholder-white/50 rounded-full py-3 px-5 pr-12 focus:outline-none focus:ring-2 focus:ring-[#FFD700]"
+                    className="w-full bg-white/10 text-white placeholder-white/50 rounded-full py-3 px-5 pr-12 focus:outline-none focus:ring-2 focus:ring-header"
                   />
                   <button
                     onClick={() => {

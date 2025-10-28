@@ -28,7 +28,7 @@ export default function Testimonials() {
 
         const { data, error } = await supabase
           .from('testimonials')
-          .select('id, image_url, is_active, created_at')
+          .select('id, image_url, customer_image_url, is_active, created_at')
           .eq('is_active', true)
           .order('created_at', { ascending: false });
         
@@ -46,7 +46,7 @@ export default function Testimonials() {
     fetchTestimonials();
   }, []);
 
-  const testimonialsWithImages = testimonials.filter(t => t.image_url);
+  const testimonialsWithImages = testimonials.filter(t => t.image_url || t.customer_image_url);
   const totalTestimonials = testimonialsWithImages.length;
 
   const handleNavigation = useCallback((direction: 'next' | 'prev') => {
@@ -169,7 +169,7 @@ export default function Testimonials() {
               >
                 <div className="w-full h-full flex justify-center items-center p-2 md:p-4">
                   <img
-                    src={testimonial.image_url || '/placeholder-testimonial.jpg'}
+                    src={testimonial.image_url || testimonial.customer_image_url || '/placeholder-testimonial.jpg'}
                     alt={`testimonial by client ${testimonial.id}`}
                     className="max-w-full max-h-full object-contain rounded-2xl shadow-2xl"
                     style={{ background: 'white' }} // Keep background for non-transparent parts of image

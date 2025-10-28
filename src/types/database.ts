@@ -85,7 +85,8 @@ export interface StoreSettings {
 // واجهة آراء العملاء (Testimonials)
 export interface Testimonial {
   id: string;
-  image_url: string | null;
+  image_url?: string | null;
+  customer_image_url?: string | null;
   is_active: boolean;
   created_at: string;
 }

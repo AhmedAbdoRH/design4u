@@ -167,7 +167,7 @@ export default function ProductDetails() {
                     {service.has_multiple_sizes ? (
                       selectedSize?.sale_price ? (
                         <div className="flex flex-col items-end">
-                          <span className="text-2xl text-[#FFD700]">{selectedSize.sale_price} ج</span>
+                          <span className="text-2xl text-gold-dark">{selectedSize.sale_price} ج</span>
                           <span className="text-lg text-gray-400 line-through">{selectedSize.price} ج</span>
                         </div>
                       ) : (
@@ -176,7 +176,7 @@ export default function ProductDetails() {
                     ) : (
                       service.sale_price ? (
                         <div className="flex flex-col items-end">
-                          <span className="text-2xl text-[#FFD700]">{service.sale_price} ج</span>
+                          <span className="text-2xl text-gold-dark">{service.sale_price} ج</span>
                           <span className="text-lg text-gray-400 line-through">{service.price} ج</span>
                         </div>
                       ) : (
@@ -218,7 +218,7 @@ export default function ProductDetails() {
                           toast.success('تمت إضافة المنتج إلى السلة');
                         }
                       }}
-                      className="bg-[#FFD700] hover:bg-yellow-500 text-black p-3 rounded-lg font-bold flex items-center justify-center"
+                      className="bg-header hover:brightness-110 text-white p-3 rounded-lg font-bold flex items-center justify-center"
                       title="أضف إلى السلة"
                     >
                       <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
