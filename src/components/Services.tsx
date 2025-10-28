@@ -159,7 +159,7 @@ export default function Services() {
   }
 
   return (
-    <section className="py-16" style={{backgroundColor: '#f7fafc'}} id="products-section">
+    <section className="pt-8 pb-16" style={{backgroundColor: '#f7fafc'}} id="products-section">
       
       <motion.div
         className="container mx-auto px-4 bg-gray-100/70 backdrop-blur-xl rounded-2xl p-8 border border-gray-200/50 shadow-2xl shadow-gray-300/40"
@@ -197,29 +197,19 @@ export default function Services() {
             {selectedSubcategory ? (
               <p>
                 اكتشف مجموعة واسعة من <strong>{subcategories.find(sc => sc.id === selectedSubcategory)?.name}</strong> 
-                في قسم <strong>{categories.find(c => c.id === selectedCategory)?.name}</strong> من 
-                <strong> Designs4U</strong>. نقدم أفضل أنواع خدمات الطباعة والتطريز وشروحات برامج التطريز 
-                بأسعار تنافسية وجودة عالية.
+                في قسم <strong>{categories.find(c => c.id === selectedCategory)?.name}</strong>.
               </p>
             ) : selectedCategory ? (
               <p>
-                تصفح مجموعة متنوعة من <strong>{categories.find(c => c.id === selectedCategory)?.name}</strong> 
-                من <strong>Designs4U</strong>. طباعة، تطريز، شروحات برامج التطريز، 
-                طباعة على القماش، طباعة على الملابس، تطريز يدوي، تطريز آلي.
+                تصفح مجموعة متنوعة من <strong>{categories.find(c => c.id === selectedCategory)?.name}</strong>.
               </p>
-            ) : (
-              <p>
-                مرحباً بكم في <strong>Designs4U</strong> - وجهتكم الأولى للحصول على 
-                <strong> أفضل خدمات الطباعة والتطريز وشروحات برامج التطريز</strong>. اكتشف مجموعتنا الواسعة من 
-                خدمات الطباعة والتطريز بأسعار تنافسية وجودة عالية.
-              </p>
-            )}
+            ) : null}
           </div>
         </motion.div>
 
         {/* Special Categories */}
         <motion.div
-          className="flex flex-wrap gap-4 justify-center mb-6"
+          className="flex flex-wrap gap-4 justify-center -mt-4 mb-4"
           variants={{
             hidden: { opacity: 0 },
             visible: { opacity: 1, transition: { staggerChildren: 0.1 } },
@@ -379,7 +369,7 @@ export default function Services() {
 
         {/* Services Grid */}
         <motion.div
-          className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8"
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8"
           variants={{
             hidden: { opacity: 0 },
             visible: { opacity: 1, transition: { staggerChildren: 0.1 } },

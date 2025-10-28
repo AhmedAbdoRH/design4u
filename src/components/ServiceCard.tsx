@@ -232,15 +232,15 @@ export default function ProductCard({ title, description, imageUrl, price, saleP
       </Link>
       
       <div className="px-6 pb-6 pt-0">
-        <div className="flex justify-between items-center">
+        <div className="flex justify-between items-center gap-4">
           <div className="flex flex-col items-end">
             {has_multiple_sizes && (displayPrice || displaySalePrice) ? (
               <>
-                <div className="flex items-center gap-1">
-                  <span className={`font-bold text-lg sm:text-xl text-gold-dark`}>
+                <div className="flex items-center gap-2">
+                  <span className={`font-bold text-2xl sm:text-3xl text-gold-dark`}>
                     {displaySalePrice || displayPrice}
                   </span>
-                  <span className={`font-bold text-lg sm:text-xl text-gold-dark`}>ج</span>
+                  <span className={`font-bold text-2xl sm:text-3xl text-gold-dark`}>ج</span>
                 </div>
                 {pricingStrategy === 'smart-fallback' ? (
                   <span className="text-xs text-yellow-400">سعر تقديري</span>
@@ -252,22 +252,22 @@ export default function ProductCard({ title, description, imageUrl, price, saleP
               </>
             ) : displaySalePrice ? (
               <>
-                <div className="flex items-center gap-1">
-                  <span className={`font-bold text-lg sm:text-xl text-gold-dark`}>{displaySalePrice}</span>
-                  <span className={`font-bold text-lg sm:text-xl text-gold-dark`}>ج</span>
+                <div className="flex items-center gap-2">
+                  <span className={`font-bold text-2xl sm:text-3xl text-gold-dark`}>{displaySalePrice}</span>
+                  <span className={`font-bold text-2xl sm:text-3xl text-gold-dark`}>ج</span>
                 </div>
                 {displayPrice && (
                   <div className="flex items-center gap-1">
-                    <span className="text-sm text-gray-400 line-through">{displayPrice}</span>
-                    <span className="text-sm text-gray-400 line-through">ج</span>
+                    <span className="text-base text-gray-400 line-through">{displayPrice}</span>
+                    <span className="text-base text-gray-400 line-through">ج</span>
                   </div>
                 )}
               </>
             ) : displayPrice ? (
               <>
-                <div className="flex items-center gap-1">
-                  <span className={`font-bold text-lg sm:text-xl text-gold-dark`}>{displayPrice}</span>
-                  <span className={`font-bold text-lg sm:text-xl text-gold-dark`}>ج</span>
+                <div className="flex items-center gap-2">
+                  <span className={`font-bold text-2xl sm:text-3xl text-gold-dark`}>{displayPrice}</span>
+                  <span className={`font-bold text-2xl sm:text-3xl text-gold-dark`}>ج</span>
                 </div>
                 {pricingStrategy === 'smart-fallback' && (
                   <span className="text-xs text-gold-dark">سعر تقديري</span>
@@ -282,28 +282,28 @@ export default function ProductCard({ title, description, imageUrl, price, saleP
             <button
               onClick={handleAddToCart}
               disabled={isAdding || isAdded}
-              className={`flex items-center justify-center p-2 rounded-lg shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-300 ${ 
+              className={`flex items-center justify-center p-2.5 rounded-lg shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-300 ${
                 isAdded 
                   ? 'bg-green-500 text-white' 
                   : 'bg-gradient-to-r from-[#345e8f] to-[#1b3459] text-white ring-1 ring-black/10'
-              } ${isAdding ? 'opacity-75' : ''}`}
+              } ${isAdding ? 'opacity-75' : ''} min-w-[44px] min-h-[44px]`}
               title={isAdded ? 'تمت الإضافة' : 'أضف إلى السلة'}
             >
               {isAdding ? (
-                <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
               ) : isAdded ? (
-                <Check className="h-5 w-5" />
+                <Check className="h-6 w-6" />
               ) : (
-                <ShoppingCart className="h-5 w-5" />
+                <ShoppingCart className="h-6 w-6" />
               )}
             </button>
             
             <button
               onClick={handleContactClick}
-              className={`bg-gradient-to-r from-[#d1a123] to-[#b8860b] text-white font-bold px-4 py-2 rounded-lg shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-300 flex items-center gap-2 ring-1 ring-black/10`}
+              className={`bg-gradient-to-r from-[#d1a123] to-[#b8860b] text-white font-bold px-5 py-2.5 rounded-lg shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-300 flex items-center gap-2 ring-1 ring-black/10 min-h-[44px]`}
             >
-              <MessageCircle className="h-5 w-5" />
-              <span className="hidden sm:inline">اطلب الآن</span>
+              <MessageCircle className="h-6 w-6" />
+              <span className="text-base">اطلب الآن</span>
             </button>
           </div>
         </div>

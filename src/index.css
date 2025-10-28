@@ -98,7 +98,7 @@ button.facebook-button:hover svg {
     radial-gradient(1200px 400px at 80% -10%, rgba(198, 160, 82, 0.15), transparent 60%),
     radial-gradient(900px 500px at 10% 120%, rgba(182, 59, 74, 0.12), transparent 55%),
     linear-gradient(180deg, #2a4365 0%, #1a365d 100%);
-  padding: 65px 0 100px;
+  padding: 65px 0 40px;
   position: relative;
   overflow: hidden;
 }
@@ -213,27 +213,30 @@ button.facebook-button:hover svg {
 .hero-frame {
   background: rgba(255, 255, 255, 0.95);
   border: 1px dashed rgba(198, 160, 82, 0.6);
-  border-radius: 22px;
-  padding: 16px;
+  border-radius: 18px;
+  padding: 10px;
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
   backdrop-filter: blur(10px);
+  max-width: 300px;
+  margin: 0 auto;
 }
 
 .hero-preview {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 12px;
+  gap: 8px;
 }
 
 .hero-ph {
   aspect-ratio: 1/1;
-  border-radius: 16px;
+  border-radius: 12px;
   border: 1px solid rgba(198, 160, 82, 0.3);
   background: rgba(255, 255, 255, 0.9);
   display: flex;
   align-items: center;
   justify-content: center;
   transition: all 0.3s ease;
+  padding: 8px;
 }
 
 .hero-ph:hover {
@@ -243,7 +246,8 @@ button.facebook-button:hover svg {
 }
 
 .hero-ph svg {
-  width: 64%;
+  width: 70%;
+  height: 70%;
   opacity: 0.75;
   transition: all 0.3s ease;
 }
@@ -257,7 +261,7 @@ button.facebook-button:hover svg {
 @media (max-width: 900px) {
   .hero-inner {
     grid-template-columns: 1fr;
-    gap: 40px;
+    gap: 30px;
   }
   
   .hero-content {
@@ -267,20 +271,50 @@ button.facebook-button:hover svg {
   
   .hero-preview {
     grid-template-columns: repeat(3, 1fr);
+    max-width: 280px;
+    margin: 0 auto;
+  }
+  
+  .hero-frame {
+    padding: 8px;
   }
 }
 
 @media (max-width: 640px) {
   .hero-section {
-    padding: 40px 0 60px;
+    padding: 30px 0 50px;
+  }
+  
+  .hero-inner {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+  }
+  
+  .hero-content {
+    order: 2; /* Move content below the shapes */
+  }
+  
+  .hero-frame {
+    order: 1; /* Move shapes above the content */
+    margin-bottom: 20px;
+    border-radius: 16px;
+    padding: 6px;
+    max-width: 240px;
   }
   
   .hero-preview {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+  }
+  
+  .hero-ph {
+    border-radius: 10px;
   }
   
   .hero-buttons {
     justify-content: center;
+    margin-top: 20px;
   }
   
   .btn {
