@@ -36,8 +36,7 @@ const ServiceCardDirect = ({ service }: { service: Service }) => {
         <p className="text-sm text-gray-700 whitespace-nowrap overflow-hidden text-ellipsis mb-2">
           {(service as any)?.description ? ((service as any).description as string).split(/\r?\n/)[0] : ''}
         </p>
-        <div className="flex flex-col items-end font-bold">
-          {/* Simplified price display logic, directly from ProductDetails.tsx */}
+        <div className="flex flex-col items-end font-bold min-h-8">
           {service.has_multiple_sizes && service.sizes && service.sizes.length > 0 ? (
             (() => {
               const validPrices = service.sizes
@@ -46,12 +45,12 @@ const ServiceCardDirect = ({ service }: { service: Service }) => {
               const validSalePrices = service.sizes
                 .map(s => parseFloat(s.sale_price as any))
                 .filter(p => !isNaN(p) && p > 0);
-              
+
               const minPrice = validPrices.length > 0 ? Math.min(...validPrices) : null;
               const maxPrice = validPrices.length > 0 ? Math.max(...validPrices) : null;
               const minSalePrice = validSalePrices.length > 0 ? Math.min(...validSalePrices) : null;
               const maxSalePrice = validSalePrices.length > 0 ? Math.max(...validSalePrices) : null;
-              
+
               if (minSalePrice && maxSalePrice) {
                 return (
                   <>
@@ -76,34 +75,8 @@ const ServiceCardDirect = ({ service }: { service: Service }) => {
                     )}
                   </>
                 );
-              } else {
-                // Smart fallback pricing - use minimum price
-                const generateSmartPricing = (serviceTitle: string) => {
-                  const title = serviceTitle.toLowerCase();
-                  
-                  if (title.includes('ألماني') || title.includes('الماني') || title.includes('ميموري') || title.includes('ديلوكس')) {
-                    return 8000; // Minimum premium price
-                  }
-                  if (title.includes('سوبر') || title.includes('ميجا') || title.includes('اوميجا') || title.includes('اكسترا')) {
-                    return 5000; // Minimum mid-range price
-                  }
-                  if (title.includes('جراند') || title.includes('فيكس')) {
-                    return 3000; // Minimum standard price
-                  }
-                  return 2000; // Minimum basic price
-                };
-                
-                const smartPrice = generateSmartPricing(service.title);
-                return (
-                  <>
-                    <div className="flex items-center gap-1">
-                      <span className={`text-lg text-header`}>{smartPrice}</span>
-                      <span className={`text-lg text-header`}>ج</span>
-                    </div>
-                    <span className="text-xs text-gold-dark">سعر تقديري</span>
-                  </>
-                );
               }
+              return <div className="h-5" />;
             })()
           ) : service.sale_price ? (
             <>
@@ -121,35 +94,13 @@ const ServiceCardDirect = ({ service }: { service: Service }) => {
               <span className={`text-lg text-gold-dark`}>{service.price}</span>
               <span className={`text-lg text-gold-dark`}>ج</span>
             </div>
+          ) : service.price ? (
+            <div className="flex items-center gap-1">
+              <span className={`text-lg text-gold-dark`}>{service.price}</span>
+              <span className={`text-lg text-gold-dark`}>ج</span>
+            </div>
           ) : (
-            (() => {
-              // Smart fallback pricing for single price services
-              const generateSmartPricing = (serviceTitle: string) => {
-                const title = serviceTitle.toLowerCase();
-                
-                if (title.includes('ألماني') || title.includes('الماني') || title.includes('ميموري') || title.includes('ديلوكس')) {
-                  return 10000; // Premium price
-                }
-                if (title.includes('سوبر') || title.includes('ميجا') || title.includes('اوميجا') || title.includes('اكسترا')) {
-                  return 7000; // Mid-range price
-                }
-                if (title.includes('جراند') || title.includes('فيكس')) {
-                  return 4500; // Standard price
-                }
-                return 3500; // Basic price
-              };
-              
-              const smartPrice = generateSmartPricing(service.title);
-              return (
-                <>
-                    <div className="flex items-center gap-1">
-                      <span className={`text-lg text-header`}>{smartPrice}</span>
-                      <span className={`text-lg text-header`}>ج</span>
-                  </div>
-                    <span className="text-xs text-gold-dark">سعر تقديري</span>
-                </>
-              );
-            })()
+            <div className="h-5" />
           )}
         </div>
       </div>

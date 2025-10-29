@@ -41,30 +41,8 @@ export default function ProductCard({ title, description, imageUrl, price, saleP
   const [isAdding, setIsAdding] = useState(false);
   const [isAdded, setIsAdded] = useState(false);
 
-  // Smart pricing system with intelligent fallbacks
-  const { displayPrice, displaySalePrice, priceRange, hasMultiplePrices, pricingStrategy } = useMemo(() => {
-    // Helper function to generate smart pricing based on product name
-    const generateSmartPricing = (productTitle: string) => {
-      const title = productTitle.toLowerCase();
-      
-      // Premium products (German, Memory, Deluxe)
-      if (title.includes('ألماني') || title.includes('الماني') || title.includes('ميموري') || title.includes('ديلوكس')) {
-        return { min: 8000, max: 15000, category: 'premium' };
-      }
-      
-      // Mid-range products (Super, Mega, Omega)
-      if (title.includes('سوبر') || title.includes('ميجا') || title.includes('اوميجا') || title.includes('اكسترا')) {
-        return { min: 5000, max: 9000, category: 'mid-range' };
-      }
-      
-      // Standard products (Grand, Fix)
-      if (title.includes('جراند') || title.includes('فيكس')) {
-        return { min: 3000, max: 6000, category: 'standard' };
-      }
-      
-      // Default pricing
-      return { min: 2000, max: 5000, category: 'basic' };
-    };
+  // Pricing: show only if present in DB (no smart fallback)
+  const { displayPrice, displaySalePrice, hasMultiplePrices } = useMemo(() => {
 
     if (has_multiple_sizes && sizes && sizes.length > 0) {
       const validPrices = sizes
@@ -80,36 +58,26 @@ export default function ProductCard({ title, description, imageUrl, price, saleP
       const minSalePrice = validSalePrices.length > 0 ? Math.min(...validSalePrices) : null;
       const maxSalePrice = validSalePrices.length > 0 ? Math.max(...validSalePrices) : null;
 
-      // If we have sale prices, use the minimum sale price
       if (minSalePrice && maxSalePrice) {
         return { 
           displayPrice: minPrice, 
           displaySalePrice: minSalePrice, 
-          priceRange: null,
-          hasMultiplePrices: minSalePrice !== maxSalePrice,
-          pricingStrategy: 'database'
+          hasMultiplePrices: minSalePrice !== maxSalePrice
         };
       }
       
-      // If we have regular prices, use the minimum price
       if (minPrice && maxPrice) {
         return { 
           displayPrice: minPrice, 
           displaySalePrice: null, 
-          priceRange: null,
-          hasMultiplePrices: minPrice !== maxPrice,
-          pricingStrategy: 'database'
+          hasMultiplePrices: minPrice !== maxPrice
         };
       }
       
-      // Smart fallback pricing for multiple sizes - use minimum price
-      const smartPricing = generateSmartPricing(title);
       return { 
-        displayPrice: smartPricing.min, 
+        displayPrice: null, 
         displaySalePrice: null, 
-        priceRange: null,
-        hasMultiplePrices: true,
-        pricingStrategy: 'smart-fallback'
+        hasMultiplePrices: false
       };
     }
 
@@ -121,24 +89,18 @@ export default function ProductCard({ title, description, imageUrl, price, saleP
       return { 
         displayPrice: priceAsFloat, 
         displaySalePrice: salePriceAsFloat, 
-        priceRange: null, 
-        hasMultiplePrices: false,
-        pricingStrategy: 'database'
+        hasMultiplePrices: false
       };
     }
 
-    // Smart fallback for single price products
-    const smartPricing = generateSmartPricing(title);
     return { 
-      displayPrice: smartPricing.min, 
+      displayPrice: null, 
       displaySalePrice: null, 
-      priceRange: null, 
-      hasMultiplePrices: false,
-      pricingStrategy: 'smart-fallback'
+      hasMultiplePrices: false
     };
   }, [has_multiple_sizes, sizes, price, salePrice, title]);
 
-  console.log('ProductCard Debug - title:', title, 'has_multiple_sizes:', has_multiple_sizes, 'sizes:', sizes, 'price:', price, 'salePrice:', salePrice, 'displayPrice:', displayPrice, 'displaySalePrice:', displaySalePrice, 'pricingStrategy:', pricingStrategy);
+  console.log('ProductCard Debug - title:', title, 'has_multiple_sizes:', has_multiple_sizes, 'sizes:', sizes, 'price:', price, 'salePrice:', salePrice, 'displayPrice:', displayPrice, 'displaySalePrice:', displaySalePrice);
 
   const handleContactClick = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -233,7 +195,7 @@ export default function ProductCard({ title, description, imageUrl, price, saleP
       
       <div className="px-6 pb-6 pt-0">
         <div className="flex justify-between items-center gap-4">
-          <div className="flex flex-col items-end">
+          <div className="flex flex-col items-end min-h-10">
             {has_multiple_sizes && (displayPrice || displaySalePrice) ? (
               <>
                 <div className="flex items-center gap-2">
@@ -242,9 +204,7 @@ export default function ProductCard({ title, description, imageUrl, price, saleP
                   </span>
                   <span className={`font-bold text-2xl sm:text-3xl text-gold-dark`}>ج</span>
                 </div>
-                {pricingStrategy === 'smart-fallback' ? (
-                  <span className="text-xs text-yellow-400">سعر تقديري</span>
-                ) : hasMultiplePrices ? (
+                {hasMultiplePrices ? (
                   <span className="text-xs text-gray-400">يبدأ من</span>
                 ) : (
                   <span className="text-xs text-gray-400">سعر موحد</span>
@@ -269,12 +229,9 @@ export default function ProductCard({ title, description, imageUrl, price, saleP
                   <span className={`font-bold text-2xl sm:text-3xl text-gold-dark`}>{displayPrice}</span>
                   <span className={`font-bold text-2xl sm:text-3xl text-gold-dark`}>ج</span>
                 </div>
-                {pricingStrategy === 'smart-fallback' && (
-                  <span className="text-xs text-gold-dark">سعر تقديري</span>
-                )}
               </>
             ) : (
-              <span className="text-sm text-gray-400">يرجى التواصل للاستفسار عن السعر</span>
+              <div className="h-6" />
             )}
           </div>
           
