@@ -22,6 +22,7 @@ import ContactUs from './pages/ContactUs';
 import LoadingScreen from './components/LoadingScreen';
 import StructuredData from './components/StructuredData';
 import Hero from './components/Hero';
+import DesignRequest from './pages/DesignRequest';
 import type { StoreSettings, Banner } from './types/database';
 import { ThemeProvider } from './theme/ThemeContext';
 
@@ -406,6 +407,11 @@ function App() {
             <Route path="/about" element={
               <Layout banners={banners}>
                 <AboutUs />
+              </Layout>
+            } />
+            <Route path="/design-request" element={
+              <Layout banners={banners}>
+                <DesignRequest />
               </Layout>
             } />
             <Route path="/contact" element={

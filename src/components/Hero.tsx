@@ -56,14 +56,12 @@ export default function Hero() {
               >
                 استكشف الآن
               </button>
-              <a 
-                href="https://wa.me/201006464349?text=مرحباً، أريد طلب تصميم مخصص" 
-                target="_blank" 
-                rel="noopener noreferrer"
+              <Link 
+                to="/design-request" 
                 className="btn btn-ghost"
               >
                 اطلب تصميمك
-              </a>
+              </Link>
             </div>
 
           </motion.div>
