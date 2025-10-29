@@ -168,6 +168,7 @@ button.facebook-button:hover svg {
   display: flex;
   gap: 12px;
   flex-wrap: wrap;
+  justify-content: center; /* center on desktop */
 }
 
 .btn {
