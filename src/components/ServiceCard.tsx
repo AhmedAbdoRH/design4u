@@ -62,8 +62,8 @@ export default function ProductCard({ title, description, imageUrl, price, saleP
         return { min: 3000, max: 6000, category: 'standard' };
       }
       
-      // No default pricing - return null for no price
-      return null;
+      // Default pricing
+      return { min: 2000, max: 5000, category: 'basic' };
     };
 
     if (has_multiple_sizes && sizes && sizes.length > 0) {
@@ -117,24 +117,24 @@ export default function ProductCard({ title, description, imageUrl, price, saleP
     const priceAsFloat = price ? parseFloat(price as any) : null;
     const salePriceAsFloat = salePrice ? parseFloat(salePrice as any) : null;
 
-    // Only return prices if they are explicitly set
-    if (priceAsFloat !== null && priceAsFloat > 0) {
+    if (priceAsFloat || salePriceAsFloat) {
       return { 
         displayPrice: priceAsFloat, 
-        displaySalePrice: salePriceAsFloat && salePriceAsFloat > 0 ? salePriceAsFloat : null, 
+        displaySalePrice: salePriceAsFloat, 
         priceRange: null, 
         hasMultiplePrices: false,
         pricingStrategy: 'database'
       };
     }
 
-    // No price set - return null for all price fields
+    // Smart fallback for single price products
+    const smartPricing = generateSmartPricing(title);
     return { 
-      displayPrice: null, 
+      displayPrice: smartPricing.min, 
       displaySalePrice: null, 
       priceRange: null, 
       hasMultiplePrices: false,
-      pricingStrategy: 'none'
+      pricingStrategy: 'smart-fallback'
     };
   }, [has_multiple_sizes, sizes, price, salePrice, title]);
 
