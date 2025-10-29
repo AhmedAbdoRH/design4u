@@ -1951,9 +1951,35 @@ export default function AdminDashboard({ onSettingsUpdate }: AdminDashboardProps
                             </button>
                           </div>
                         ) : (
-                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <input type="number" placeholder="السعر" value={newService.price || ''} onChange={(e) => setNewService({ ...newService, price: parseFloat(e.target.value) })} className="w-full p-3 rounded text-white bg-gray-700 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500" required disabled={isLoading}/>
-                            <input type="number" placeholder="سعر التخفيض (اختياري)" value={newService.sale_price || ''} onChange={(e) => setNewService({ ...newService, sale_price: parseFloat(e.target.value) || null })} className="w-full p-3 rounded text-white bg-gray-700 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500" disabled={isLoading}/>
+                          <div className="space-y-2 w-full">
+                            <div className="relative">
+                              <input 
+                                type="number" 
+                                placeholder="السعر (اختياري)" 
+                                value={newService.price || ''} 
+                                onChange={(e) => setNewService({ ...newService, price: e.target.value !== '' ? parseFloat(e.target.value) : null })} 
+                                className="w-full p-3 pr-10 rounded text-white bg-gray-700 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500" 
+                                disabled={isLoading}
+                              />
+                              <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-sm">
+                                ج.م
+                              </span>
+                            </div>
+                            {newService.price !== null && (
+                              <div className="relative">
+                                <input 
+                                  type="number" 
+                                  placeholder="سعر التخفيض (اختياري)" 
+                                  value={newService.sale_price || ''} 
+                                  onChange={(e) => setNewService({ ...newService, sale_price: e.target.value !== '' ? parseFloat(e.target.value) : null })} 
+                                  className="w-full p-3 pr-10 rounded text-white bg-gray-700 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500" 
+                                  disabled={isLoading}
+                                />
+                                <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-sm">
+                                  ج.م
+                                </span>
+                              </div>
+                            )}
                           </div>
                         )}
 

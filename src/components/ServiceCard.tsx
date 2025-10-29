@@ -62,8 +62,8 @@ export default function ProductCard({ title, description, imageUrl, price, saleP
         return { min: 3000, max: 6000, category: 'standard' };
       }
       
-      // Default pricing
-      return { min: 2000, max: 5000, category: 'basic' };
+      // No default pricing - return null for no price
+      return null;
     };
 
     if (has_multiple_sizes && sizes && sizes.length > 0) {
@@ -117,24 +117,24 @@ export default function ProductCard({ title, description, imageUrl, price, saleP
     const priceAsFloat = price ? parseFloat(price as any) : null;
     const salePriceAsFloat = salePrice ? parseFloat(salePrice as any) : null;
 
-    if (priceAsFloat || salePriceAsFloat) {
+    // Only return prices if they are explicitly set
+    if (priceAsFloat !== null && priceAsFloat > 0) {
       return { 
         displayPrice: priceAsFloat, 
-        displaySalePrice: salePriceAsFloat, 
+        displaySalePrice: salePriceAsFloat && salePriceAsFloat > 0 ? salePriceAsFloat : null, 
         priceRange: null, 
         hasMultiplePrices: false,
         pricingStrategy: 'database'
       };
     }
 
-    // Smart fallback for single price products
-    const smartPricing = generateSmartPricing(title);
+    // No price set - return null for all price fields
     return { 
-      displayPrice: smartPricing.min, 
+      displayPrice: null, 
       displaySalePrice: null, 
       priceRange: null, 
       hasMultiplePrices: false,
-      pricingStrategy: 'smart-fallback'
+      pricingStrategy: 'none'
     };
   }, [has_multiple_sizes, sizes, price, salePrice, title]);
 
@@ -233,50 +233,36 @@ export default function ProductCard({ title, description, imageUrl, price, saleP
       
       <div className="px-6 pb-6 pt-0">
         <div className="flex justify-between items-center gap-4">
-          <div className="flex flex-col items-end">
-            {has_multiple_sizes && (displayPrice || displaySalePrice) ? (
-              <>
+          {((has_multiple_sizes && (displayPrice || displaySalePrice)) || displaySalePrice || displayPrice) && (
+            <div className="flex flex-col items-end">
+              {has_multiple_sizes ? (
                 <div className="flex items-center gap-2">
                   <span className={`font-bold text-2xl sm:text-3xl text-gold-dark`}>
                     {displaySalePrice || displayPrice}
                   </span>
                   <span className={`font-bold text-2xl sm:text-3xl text-gold-dark`}>ج</span>
                 </div>
-                {pricingStrategy === 'smart-fallback' ? (
-                  <span className="text-xs text-yellow-400">سعر تقديري</span>
-                ) : hasMultiplePrices ? (
-                  <span className="text-xs text-gray-400">يبدأ من</span>
-                ) : (
-                  <span className="text-xs text-gray-400">سعر موحد</span>
-                )}
-              </>
-            ) : displaySalePrice ? (
-              <>
-                <div className="flex items-center gap-2">
-                  <span className={`font-bold text-2xl sm:text-3xl text-gold-dark`}>{displaySalePrice}</span>
-                  <span className={`font-bold text-2xl sm:text-3xl text-gold-dark`}>ج</span>
-                </div>
-                {displayPrice && (
-                  <div className="flex items-center gap-1">
-                    <span className="text-base text-gray-400 line-through">{displayPrice}</span>
-                    <span className="text-base text-gray-400 line-through">ج</span>
+              ) : displaySalePrice ? (
+                <>
+                  <div className="flex items-center gap-2">
+                    <span className={`font-bold text-2xl sm:text-3xl text-gold-dark`}>{displaySalePrice}</span>
+                    <span className={`font-bold text-2xl sm:text-3xl text-gold-dark`}>ج</span>
                   </div>
-                )}
-              </>
-            ) : displayPrice ? (
-              <>
+                  {displayPrice && (
+                    <div className="flex items-center gap-1">
+                      <span className="text-base text-gray-400 line-through">{displayPrice}</span>
+                      <span className="text-base text-gray-400 line-through">ج</span>
+                    </div>
+                  )}
+                </>
+              ) : (
                 <div className="flex items-center gap-2">
                   <span className={`font-bold text-2xl sm:text-3xl text-gold-dark`}>{displayPrice}</span>
                   <span className={`font-bold text-2xl sm:text-3xl text-gold-dark`}>ج</span>
                 </div>
-                {pricingStrategy === 'smart-fallback' && (
-                  <span className="text-xs text-gold-dark">سعر تقديري</span>
-                )}
-              </>
-            ) : (
-              <span className="text-sm text-gray-400">يرجى التواصل للاستفسار عن السعر</span>
-            )}
-          </div>
+              )}
+            </div>
+          )}
           
           <div className="flex gap-2">
             <button
