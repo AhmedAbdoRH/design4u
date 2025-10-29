@@ -89,10 +89,10 @@ export default function Services() {
                    p-8
                    border border-white/10
                    shadow-2xl shadow-black/40">
-        <h2 className={`text-3xl font-bold text-center mb-12 text-[${lightGold}]`}>
+        <h2 className="text-3xl font-bold text-center mb-12" style={{ color: lightGold }}>
           مفروشاتنا
         </h2>
-        <div className="w-full h-1 bg-[${lightGold}] mb-8"></div>
+        <div className="w-full h-1 mb-8" style={{ backgroundColor: lightGold }}></div>
 
         {/* Category Cards */}
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-20">
