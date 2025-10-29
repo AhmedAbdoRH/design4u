@@ -22,6 +22,14 @@ const DesignRequest = () => {
       [name]: type === 'checkbox' ? checked : value
     }));
   };
+  
+  // Custom handler for design type selection
+  const handleDesignTypeSelect = (type: string) => {
+    setFormData(prev => ({
+      ...prev,
+      designType: type
+    }));
+  };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
@@ -88,20 +96,7 @@ const DesignRequest = () => {
     }
   };
 
-  const designTypes = [
-    'تصميم أزياء نسائية',
-    'تصميم أزياء رجالية',
-    'تصميم ملابس أطفال',
-    'تطريز يدوي',
-    'تطريز آلي',
-    'طباعة على الملابس',
-    'تطريز شعارات',
-    'تطريز أسماء',
-    'تصميم أزياء عروس',
-    'تصميم أزياء سهرة',
-    'تصميم أزياء رياضية',
-    'تصاميم أخرى'
-  ];
+  const designTypes = ['تصميم', 'تطريز'];
 
   return (
     <div className="min-h-screen bg-white py-12 px-4 sm:px-6 lg:px-8">
@@ -153,20 +148,24 @@ const DesignRequest = () => {
               <h2 className="text-2xl font-bold text-black">تفاصيل التصميم</h2>
               
               <div>
-                <label htmlFor="designType" className="block text-sm font-medium text-black mb-1">نوع التصميم المطلوب</label>
-                <select
-                  id="designType"
-                  name="designType"
-                  value={formData.designType}
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black"
-                  required
-                >
-                  <option value="" className="text-black">اختر نوع التصميم</option>
-                  {designTypes.map((type, index) => (
-                    <option key={index} value={type} className="text-black">{type}</option>
+                <label className="block text-sm font-medium text-black mb-3">اختر نوع الخدمة</label>
+                <div className="grid grid-cols-2 gap-4">
+                  {designTypes.map((type) => (
+                    <button
+                      key={type}
+                      type="button"
+                      onClick={() => setFormData(prev => ({ ...prev, designType: type }))}
+                      className={`flex-1 py-4 px-6 rounded-xl border-2 transition-all duration-200 ${formData.designType === type 
+                        ? 'border-black bg-gray-100 text-black' 
+                        : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50 text-black'}`}
+                    >
+                      <span className="text-xl font-medium">{type}</span>
+                    </button>
                   ))}
-                </select>
+                </div>
+                {!formData.designType && (
+                  <p className="mt-1 text-sm text-red-500">الرجاء اختيار نوع الخدمة</p>
+                )}
               </div>
               
               <div>

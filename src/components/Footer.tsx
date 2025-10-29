@@ -65,12 +65,20 @@ export default function Footer({ storeSettings }: FooterProps) {
           </div>
 
           
-          <Link
-            to="/admin/login"
-            className="text-secondary/0 hover:text-accent transition-colors duration-300 flex justify-center items-center"
-          >
-            لوحة التحكم
-          </Link>
+          <div className="flex gap-6">
+            <Link
+              to="/about"
+              className="text-white/70 hover:text-accent transition-colors duration-300 text-sm font-medium"
+            >
+              من نحن
+            </Link>
+            <Link
+              to="/admin/login"
+              className="text-white/70 hover:text-accent transition-colors duration-300 text-sm font-medium"
+            >
+              لوحة التحكم
+            </Link>
+          </div>
         </div>
       </div>
     </footer>
