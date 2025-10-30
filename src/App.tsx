@@ -19,6 +19,7 @@ import SubcategoryProducts from './pages/SubcategoryProducts';
 import ProductDetails from './pages/ProductDetails';
 import AboutUs from './pages/AboutUs';
 import ContactUs from './pages/ContactUs';
+import DownloadPage from './pages/DownloadPage';
 import LoadingScreen from './components/LoadingScreen';
 import StructuredData from './components/StructuredData';
 import Hero from './components/Hero';
@@ -407,6 +408,11 @@ function App() {
             <Route path="/about" element={
               <Layout banners={banners}>
                 <AboutUs />
+              </Layout>
+            } />
+            <Route path="/download" element={
+              <Layout banners={banners}>
+                <DownloadPage />
               </Layout>
             } />
             <Route path="/design-request" element={

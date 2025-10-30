@@ -78,6 +78,12 @@ export default function Footer({ storeSettings }: FooterProps) {
             >
               لوحة التحكم
             </Link>
+            <Link
+              to="/download"
+              className="text-white/70 hover:text-accent transition-colors duration-300 text-sm font-medium"
+            >
+              صفحة التحميل
+            </Link>
           </div>
         </div>
       </div>

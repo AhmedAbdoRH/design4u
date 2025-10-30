@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import type { Category, Service, Banner, StoreSettings, Testimonial, Subcategory } from '../types/database'; // Added Subcategory type
-import { Trash2, Edit, Plus, Save, X, Upload, ChevronDown, ChevronUp, Facebook, Instagram, Twitter, Palette, Store, Image, List, Package } from 'lucide-react';
+import { Trash2, Edit, Plus, Save, X, Upload, Download, Store, Image, List, Package } from 'lucide-react';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -35,8 +35,19 @@ export default function AdminDashboard({ onSettingsUpdate }: AdminDashboardProps
   const [logoUrl, setLogoUrl] = useState<string | null>(null);
   const [editingCategory, setEditingCategory] = useState<string | null>(null);
   const [editingBanner, setEditingBanner] = useState<string | null>(null);
-  const [deleteModal, setDeleteModal] = useState<{ id: string | number; type: 'category' | 'service' | 'banner' | 'subcategory' } | null>(null);
-  const [activeTab, setActiveTab] = useState<'services' | 'banners' | 'testimonials' | 'store'>('services');
+  const [deleteModal, setDeleteModal] = useState<{ id: string | number; type: 'category' | 'service' | 'banner' | 'subcategory' | 'download' } | null>(null);
+  const [activeTab, setActiveTab] = useState<'services' | 'banners' | 'testimonials' | 'store' | 'downloads'>('services');
+  const [files, setFiles] = useState<Array<{
+    id: string;
+    title: string;
+    description?: string;
+    file_url: string;
+    file_name: string;
+    file_size: number;
+    download_count: number;
+    created_at: string;
+  }>>([]);
+  const [uploadingFile, setUploadingFile] = useState(false);
 
   // Remove BG switch state and original image backup (session only)
   const [removeBgSwitch, setRemoveBgSwitch] = useState(false);
@@ -338,6 +349,74 @@ export default function AdminDashboard({ onSettingsUpdate }: AdminDashboardProps
     }
   };
 
+  const fetchDownloads = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('downloads')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      setFiles(data || []);
+    } catch (err: any) {
+      setError(err.message);
+    }
+  };
+
+  const handleDownloadFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    setUploadingFile(true);
+    setError(null);
+
+    try {
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExt}`;
+      
+      const { error: uploadError } = await supabase.storage
+        .from('downloads')
+        .upload(fileName, file);
+
+      if (uploadError) throw uploadError;
+
+      // Get the public URL
+      const { data: { publicUrl } } = supabase.storage
+        .from('downloads')
+        .getPublicUrl(fileName);
+
+      // Insert record in downloads table
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error('User not authenticated');
+
+      const { error: insertError } = await supabase
+        .from('downloads')
+        .insert({
+          title: file.name,
+          file_name: fileName,
+          file_url: publicUrl,
+          file_size: file.size,
+          download_count: 0,
+          uploaded_by: user.id
+        });
+
+      if (insertError) throw insertError;
+
+      // Refresh downloads list
+      fetchDownloads();
+
+      // Clear the file input
+      event.target.value = '';
+      
+      setSuccessMsg('تم رفع الملف بنجاح!');
+
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setUploadingFile(false);
+    }
+  };
+
   useEffect(() => {
     const initialize = async () => {
       setIsLoading(true);
@@ -347,6 +426,7 @@ export default function AdminDashboard({ onSettingsUpdate }: AdminDashboardProps
         await fetchStoreSettings();
         await fetchLogoUrl();
         await fetchTestimonials();
+        await fetchDownloads();
       } catch (err: any) {
         toast.error(`خطأ أثناء التهيئة: ${err.message}`);
       } finally {
@@ -553,7 +633,7 @@ export default function AdminDashboard({ onSettingsUpdate }: AdminDashboardProps
     }
   };
 
-  const handleFileUpload = async (
+  const handleImageFileUpload = async (
     event: React.ChangeEvent<HTMLInputElement>,
     type: 'logo' | 'favicon' | 'og_image' | 'service' | 'banner'
   ) => {
@@ -665,39 +745,7 @@ export default function AdminDashboard({ onSettingsUpdate }: AdminDashboardProps
     });
   }
 
-  const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>, type: 'service' | 'banner' = 'service') => {
-    const file = event.target.files?.[0];
-    if (!file) return;
 
-    const uploadingState = type === 'service' ? setUploadingImage : setUploadingBannerImage;
-    const setNewState = type === 'service' ? setNewService : setNewBanner;
-
-    uploadingState(true);
-    try {
-      if (!file.type.startsWith('image/')) throw new Error('الرجاء اختيار ملف صورة صالح');
-      
-      let fileToUpload = await resizeImageIfNeeded(file, 2); // This will be the file we eventually upload
-
-      const fileExt = fileToUpload.name.split('.').pop();
-      const fileName = `${Date.now()}_${Math.random().toString(36).substring(2)}.${fileExt}`;
-      const filePath = `${fileName}`;
-
-      // Upload the final processed file (either original resized or background-removed)
-      const { error: uploadError } = await supabase.storage.from('services').upload(filePath, fileToUpload);
-      if (uploadError) throw uploadError;
-
-      const { data: { publicUrl } } = supabase.storage.from('services').getPublicUrl(filePath);
-      
-      setNewState(prev => ({ ...prev, image_url: publicUrl }));
-      setSuccessMsg("تم رفع الصورة بنجاح!");
-
-    } catch (err: any) {
-      setError(`خطأ في رفع الصورة: ${err.message}`);
-      setNewState(prev => ({ ...prev, image_url: '' }));
-    } finally {
-      uploadingState(false);
-    }
-  };
 
   
 
@@ -1074,7 +1122,7 @@ export default function AdminDashboard({ onSettingsUpdate }: AdminDashboardProps
 
   const handleCancelEditSubcategory = () => {
     setEditingSubcategory(null);
-    setNewSubcategory({ category_id: '', name_ar: '', description_ar: '' });
+    setNewSubcategory({ category_id: '', name_ar: '', name_en: '', description_ar: '' });
   };
 
   const handleAddBanner = async (e: React.FormEvent) => {
@@ -1259,7 +1307,7 @@ export default function AdminDashboard({ onSettingsUpdate }: AdminDashboardProps
     navigate('/admin/login');
   };
 
-  const handleGalleryUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleGalleryFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
     if (!files || files.length === 0) return;
     setUploadingImage(true);
@@ -1295,7 +1343,7 @@ export default function AdminDashboard({ onSettingsUpdate }: AdminDashboardProps
     }
   };
 
-  const handleImageUploadTestimonial = async (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleTestimonialImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
 
@@ -1459,6 +1507,17 @@ export default function AdminDashboard({ onSettingsUpdate }: AdminDashboardProps
               <Store className="h-5 w-5" />
               <span>إعدادات المتجر</span>
             </button>
+            
+            <button
+              onClick={() => setActiveTab('downloads')}
+              className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg font-bold transition-all duration-300 transform
+                ${activeTab === 'downloads'
+                  ? 'bg-blue-500 text-white shadow-lg -translate-y-1'
+                  : 'bg-gray-800 text-gray-300 hover:bg-gray-700 hover:text-white'}`}
+            >
+              <Download className="h-5 w-5" />
+              <span>رفع الملفات</span>
+            </button>
           </div>
 
           {/* Main Content */}
@@ -1468,16 +1527,18 @@ export default function AdminDashboard({ onSettingsUpdate }: AdminDashboardProps
                 <div className="flex items-center justify-between">
                     <div>
                         <h2 className="text-2xl font-bold text-white flex items-center gap-2">
-                            {activeTab === 'products' && <><Package className="w-7 h-7 text-blue-400" /> إدارة الخدمات</>}
+                            {activeTab === 'services' && <><Package className="w-7 h-7 text-blue-400" /> إدارة الخدمات</>}
                             {activeTab === 'banners' && <><Image className="w-7 h-7 text-blue-400" /> إدارة البانرات</>}
                             {activeTab === 'testimonials' && <><List className="w-7 h-7 text-blue-400" /> إدارة آراء العملاء</>}
                             {activeTab === 'store' && <><Store className="w-7 h-7 text-blue-400" /> إعدادات المتجر</>}
+                            {activeTab === 'downloads' && <><Download className="w-7 h-7 text-blue-400" /> إدارة الملفات</>}
                         </h2>
                         <p className="text-gray-400 mt-1 text-sm">
-                            {activeTab === 'products' && 'إدارة الخدمات والأقسام المرتبطة بها.'}
+                            {activeTab === 'services' && 'إدارة الخدمات والأقسام المرتبطة بها.'}
                             {activeTab === 'banners' && 'يمكنك إضافة بانر نصي أو صور أو شريطي.'}
                             {activeTab === 'testimonials' && 'إدارة وتعديل آراء وتقييمات العملاء.'}
                             {activeTab === 'store' && 'تعديل إعدادات المتجر والمعلومات العامة.'}
+                            {activeTab === 'downloads' && 'إدارة وتنظيم الملفات القابلة للتحميل.'}
                         </p>
                     </div>
                      <div className="flex items-center gap-2 text-xs font-bold">
@@ -1537,7 +1598,7 @@ export default function AdminDashboard({ onSettingsUpdate }: AdminDashboardProps
                             id="testimonial-upload"
                             accept="image/*"
                             className="hidden"
-                            onChange={handleImageUploadTestimonial}
+                            onChange={handleTestimonialImageUpload}
                             disabled={uploadingTestimonialImage || isLoading}
                         />
                     </div>
@@ -1578,6 +1639,85 @@ export default function AdminDashboard({ onSettingsUpdate }: AdminDashboardProps
                 </div>
             )}
             
+            {activeTab === 'downloads' && (
+                <div className="space-y-6">
+                    <div className="bg-gray-800/50 border border-gray-700 rounded-lg p-6">
+                        <h3 className="text-lg font-semibold text-white mb-4">رفع ملف جديد</h3>
+                        <label
+                          className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-gray-600 rounded-lg cursor-pointer hover:border-blue-500 hover:bg-gray-700/50 transition-all"
+                        >
+                          <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                            <Upload className={`h-10 w-10 text-blue-500 mb-3 ${uploadingFile ? 'animate-bounce' : ''}`} />
+                            <p className="mb-2 text-sm text-white">
+                              <span className="font-semibold">اضغط للرفع</span> أو اسحب وأفلت
+                            </p>
+                            <p className="text-xs text-gray-400">
+                              جميع أنواع الملفات مدعومة
+                            </p>
+                          </div>
+                          <input
+                            type="file"
+                            className="hidden"
+                            onChange={handleDownloadFileUpload}
+                            disabled={uploadingFile}
+                          />
+                        </label>
+                    </div>
+
+                    <div className="bg-gray-800/50 border border-gray-700 rounded-lg p-6">
+                        <h3 className="text-lg font-semibold text-white mb-4">الملفات المرفوعة</h3>
+                        
+                        {files.length === 0 ? (
+                            <p className="text-center text-gray-400 py-8">لا توجد ملفات مرفوعة</p>
+                        ) : (
+                            <div className="space-y-4">
+                                {files.map((file) => (
+                                    <div
+                                        key={file.id}
+                                        className="flex items-center justify-between p-4 bg-gray-700/30 rounded-lg"
+                                    >
+                                        <div className="flex-1">
+                                            <h4 className="text-white font-medium">{file.title}</h4>
+                                            <div className="flex items-center gap-4 mt-1 text-sm text-gray-400">
+                                                <span>
+                                                    {(file.file_size / 1024 / 1024).toFixed(2)} MB
+                                                </span>
+                                                <span>•</span>
+                                                <span>
+                                                    التحميلات: {file.download_count}
+                                                </span>
+                                                <span>•</span>
+                                                <span>
+                                                    {new Date(file.created_at).toLocaleDateString('ar-EG')}
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div className="flex items-center gap-2">
+                                            <a
+                                                href={file.file_url}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="p-2 text-blue-400 hover:text-blue-300 transition-colors"
+                                            >
+                                                <Download className="h-5 w-5" />
+                                            </a>
+                                            <button
+                                                onClick={() => {
+                                                    setDeleteModal({ id: file.id, type: 'download' });
+                                                }}
+                                                className="p-2 text-red-400 hover:text-red-300 transition-colors"
+                                            >
+                                                <Trash2 className="h-5 w-5" />
+                                            </button>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+                    </div>
+                </div>
+            )}
+
             {activeTab === 'store' && (
                 <div className="bg-gray-800/50 border border-gray-700 rounded-lg shadow-lg">
                     <div className="p-6">
@@ -1762,7 +1902,7 @@ export default function AdminDashboard({ onSettingsUpdate }: AdminDashboardProps
                          <input
                           type="file"
                           accept="image/*"
-                          onChange={(e) => handleImageUpload(e, 'banner')}
+                          onChange={(e) => handleImageFileUpload(e, 'banner')}
                           className="hidden"
                           id="banner-image-upload"
                           disabled={uploadingBannerImage || isLoading}
@@ -1835,7 +1975,7 @@ export default function AdminDashboard({ onSettingsUpdate }: AdminDashboardProps
                                 <span className="text-white font-semibold">{uploadingImage ? 'جاري رفع الصورة...' : (newService.image_url ? 'تغيير الصورة الرئيسية' : 'اختر صورة الخدمة الرئيسية')}</span>
                                 <span className="text-xs text-gray-400 mt-1">المقاس الموصى به: أبعاد أفقية (5:4)</span>
                             </label>
-                            <input type="file" accept="image/*" onChange={handleImageUpload} className="hidden" id="image-upload" disabled={uploadingImage || isLoading}/>
+                            <input type="file" accept="image/*" onChange={(e) => handleImageFileUpload(e, 'service')} className="hidden" id="image-upload" disabled={uploadingImage || isLoading}/>
                         </div>
 
                         {/* مفتاح تحويل الصورة إلى خلفية شفافة أسفل المعاينة */}
@@ -1957,7 +2097,7 @@ export default function AdminDashboard({ onSettingsUpdate }: AdminDashboardProps
                                 type="number" 
                                 placeholder="السعر (اختياري)" 
                                 value={newService.price || ''} 
-                                onChange={(e) => setNewService({ ...newService, price: e.target.value !== '' ? parseFloat(e.target.value) : null })} 
+                                onChange={(e) => setNewService({ ...newService, price: e.target.value !== '' ? parseFloat(e.target.value) : 0 })} 
                                 className="w-full p-3 pr-10 rounded text-white bg-gray-700 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500" 
                                 disabled={isLoading}
                               />
@@ -1996,7 +2136,7 @@ export default function AdminDashboard({ onSettingsUpdate }: AdminDashboardProps
 
                         <div>
                           <label className="block text-sm font-medium text-gray-300 mb-1">صور إضافية للمنتج <span className="text-gray-400">(اختياري)</span></label>
-                          <input type="file" accept="image/*" multiple onChange={handleGalleryUpload} className="w-full text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100" disabled={uploadingImage || isLoading}/>
+                          <input type="file" accept="image/*" multiple onChange={(e) => handleGalleryFileUpload(e)} className="w-full text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100" disabled={uploadingImage || isLoading}/>
                           <div className="flex flex-wrap gap-2 mt-2">
                             {newService.gallery && newService.gallery.map((img, idx) => (
                               <div key={img} className="relative group">
