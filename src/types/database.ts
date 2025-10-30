@@ -72,7 +72,6 @@ export interface StoreSettings {
   twitter_url: string | null;
   snapchat_url: string | null;
   tiktok_url: string | null;
-  show_testimonials: boolean | null;
   theme_settings?: {
     primaryColor?: string;
     secondaryColor?: string;
