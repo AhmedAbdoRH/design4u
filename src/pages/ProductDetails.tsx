@@ -142,9 +142,30 @@ export default function ProductDetails() {
               </div>
               <div className="md:w-1/2 p-8">
                 <h1 className="text-3xl font-bold mb-4 text-gray-800 text-right">{service.title}</h1>
-                <p className="text-gray-700 mb-6 text-lg leading-relaxed text-right" style={{ whiteSpace: 'pre-wrap' }}>
-  {service.description}
-</p>
+                <div className="text-gray-700 mb-6 text-lg leading-relaxed text-right" style={{ whiteSpace: 'pre-wrap' }}>
+                  {(() => {
+                    if (!service.description) return null;
+                    const urlRegex = /(https?:\/\/[^\s]+)/g;
+                    const parts = service.description.split(urlRegex);
+                    return parts.map((part, idx) => {
+                      if (urlRegex.test(part)) {
+                        return (
+                          <a
+                            key={`url-${idx}`}
+                            href={part}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-2 px-4 py-1.5 bg-gold-dark text-white rounded-md shadow hover:brightness-110 transition-colors"
+                            title="تحميل الآن"
+                          >
+                            تحميل الآن
+                          </a>
+                        );
+                      }
+                      return <span key={`txt-${idx}`}>{part}</span>;
+                    });
+                  })()}
+                </div>
                 <div className="border-t border-gray-200 pt-6 mb-6">
                   {service.has_multiple_sizes && service.sizes && service.sizes.length > 0 && (
                     <div className="mb-4">
@@ -164,27 +185,37 @@ export default function ProductDetails() {
                       </div>
                     </div>
                   )}
-                  <div className="text-2xl font-bold text-accent mb-6 text-right">
-                    {service.has_multiple_sizes ? (
-                      selectedSize?.sale_price ? (
-                        <div className="flex flex-col items-end">
-                          <span className="text-2xl text-gold-dark">{selectedSize.sale_price} ج</span>
-                          <span className="text-lg text-gray-400 line-through">{selectedSize.price} ج</span>
-                        </div>
-                      ) : (
-                        <span>{selectedSize?.price} ج</span>
-                      )
-                    ) : (
-                      service.sale_price ? (
-                        <div className="flex flex-col items-end">
-                          <span className="text-2xl text-gold-dark">{service.sale_price} ج</span>
-                          <span className="text-lg text-gray-400 line-through">{service.price} ج</span>
-                        </div>
-                      ) : (
-                        <span>{service.price} ج</span>
-                      )
-                    )}
-                  </div>
+                  {service.has_multiple_sizes ? (
+                    (selectedSize?.sale_price || selectedSize?.price) ? (
+                      <div className="text-2xl font-bold text-accent mb-6 text-right">
+                        {selectedSize?.sale_price ? (
+                          <div className="flex flex-col items-end">
+                            <span className="text-2xl text-gold-dark">{selectedSize.sale_price} ج</span>
+                            {selectedSize?.price ? (
+                              <span className="text-lg text-gray-400 line-through">{selectedSize.price} ج</span>
+                            ) : null}
+                          </div>
+                        ) : (
+                          <span>{selectedSize?.price} ج</span>
+                        )}
+                      </div>
+                    ) : null
+                  ) : (
+                    (service.sale_price || service.price) ? (
+                      <div className="text-2xl font-bold text-accent mb-6 text-right">
+                        {service.sale_price ? (
+                          <div className="flex flex-col items-end">
+                            <span className="text-2xl text-gold-dark">{service.sale_price} ج</span>
+                            {service.price ? (
+                              <span className="text-lg text-gray-400 line-through">{service.price} ج</span>
+                            ) : null}
+                          </div>
+                        ) : (
+                          <span>{service.price} ج</span>
+                        )}
+                      </div>
+                    ) : null
+                  )}
                   <div className="flex gap-4 items-center">
                     <button
                       onClick={handleContact}
@@ -271,23 +302,49 @@ export default function ProductDetails() {
                     }}
                   />
                   <div className="mt-2 text-sm md:text-base font-bold text-gray-800 truncate text-right">{item.title}</div>
-                  <div className="flex flex-col items-end">
-                    {item.has_multiple_sizes && item.sizes && item.sizes.length > 0 && item.sizes[0].sale_price ? (
-                      <>
-                        <span className="text-xs md:text-sm text-[#D4AF37] font-bold">{item.sizes[0].sale_price} ج</span>
-                        <span className="text-xs text-gray-400 line-through">{item.sizes[0].price} ج</span>
-                      </>
-                    ) : item.has_multiple_sizes && item.sizes && item.sizes.length > 0 ? (
-                      <span className="text-xs md:text-sm text-accent">{item.sizes[0].price} ج</span>
-                    ) : item.sale_price ? (
-                      <>
-                        <span className="text-xs md:text-sm text-[#D4AF37] font-bold">{item.sale_price} ج</span>
-                        <span className="text-xs text-gray-400 line-through">{item.price} ج</span>
-                      </>
-                    ) : (
-                      <span className="text-xs md:text-sm text-accent">{item.price} ج</span>
-                    )}
-                  </div>
+                  {(() => {
+                    if (item.has_multiple_sizes && item.sizes && item.sizes.length > 0) {
+                      const first = item.sizes[0];
+                      const hasSale = !!first.sale_price;
+                      const hasPrice = !!first.price;
+                      if (hasSale) {
+                        return (
+                          <div className="flex flex-col items-end">
+                            <span className="text-xs md:text-sm text-[#D4AF37] font-bold">{first.sale_price} ج</span>
+                            {hasPrice ? (
+                              <span className="text-xs text-gray-400 line-through">{first.price} ج</span>
+                            ) : null}
+                          </div>
+                        );
+                      }
+                      if (hasPrice) {
+                        return (
+                          <div className="flex flex-col items-end">
+                            <span className="text-xs md:text-sm text-accent">{first.price} ج</span>
+                          </div>
+                        );
+                      }
+                      return null;
+                    }
+                    if (item.sale_price) {
+                      return (
+                        <div className="flex flex-col items-end">
+                          <span className="text-xs md:text-sm text-[#D4AF37] font-bold">{item.sale_price} ج</span>
+                          {item.price ? (
+                            <span className="text-xs text-gray-400 line-through">{item.price} ج</span>
+                          ) : null}
+                        </div>
+                      );
+                    }
+                    if (item.price) {
+                      return (
+                        <div className="flex flex-col items-end">
+                          <span className="text-xs md:text-sm text-accent">{item.price} ج</span>
+                        </div>
+                      );
+                    }
+                    return null;
+                  })()}
                 </div>
               );
             })}
