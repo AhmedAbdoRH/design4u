@@ -274,46 +274,8 @@ export default function ServiceDetails() {
                 </div>
                 <div className="md:w-1/2 p-8">
                   <h1 className="text-3xl font-bold mb-4 text-secondary">{service.title}</h1>
-                  <p className="text-white mb-6 text-lg leading-relaxed" style={{ whiteSpace: 'pre-wrap' }}>
-                    {(() => {
-                      if (!service.description) return null;
-                      const googleDriveShareRegex = /(https?:\/\/drive\.google\.com\/file\/d\/([a-zA-Z0-9_-]+)\/view\?usp=sharing)/g;
-                      const urlRegex = /(https?:\/\/[^\s]+)/g;
-                      const parts = service.description.split(new RegExp(`(${googleDriveShareRegex.source}|${urlRegex.source})`, 'g'));
-                      return parts.map((part, idx) => {
-                        if (googleDriveShareRegex.test(part)) {
-                          const match = part.match(googleDriveShareRegex);
-                          const fileId = match && match[2];
-                          const downloadUrl = `https://drive.google.com/uc?export=download&id=${fileId}`;
-                          return (
-                            <a
-                              key={`gd-url-${idx}`}
-                              href={downloadUrl}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="inline-flex items-center gap-2 px-4 py-1.5 bg-gold-dark text-white rounded-md shadow hover:brightness-110 transition-colors"
-                              title="تحميل الآن"
-                            >
-                              تحميل الآن
-                            </a>
-                          );
-                        } else if (urlRegex.test(part)) {
-                          return (
-                            <a
-                              key={`url-${idx}`}
-                              href={part}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="inline-flex items-center gap-2 px-4 py-1.5 bg-gold-dark text-white rounded-md shadow hover:brightness-110 transition-colors"
-                              title="تحميل الآن"
-                            >
-                              تحميل الآن
-                            </a>
-                          );
-                        }
-                        return <span key={`txt-${idx}`}>{part}</span>;
-                      });
-                    })()}
+                  <p className="text-white mb-6 text-lg leading-relaxed">
+                    {service.description}
                   </p>
                   <div className="border-t border-gray-700 pt-6 mb-6">
                     <div className="text-2xl font-bold text-accent mb-6">

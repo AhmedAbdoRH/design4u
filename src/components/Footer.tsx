@@ -72,18 +72,14 @@ export default function Footer({ storeSettings }: FooterProps) {
             >
               من نحن
             </Link>
+          </div>
+          <div className="mt-2">
             <Link
-              to="/admin/login"
-              className="text-white/70 hover:text-accent transition-colors duration-300 text-sm font-medium"
-            >
-              لوحة التحكم
-            </Link>
-            <Link
-              to="/download"
-              className="text-white/70 hover:text-accent transition-colors duration-300 text-sm font-medium"
-            >
-              صفحة التحميل
-            </Link>
+                to="/admin/login"
+                className="text-white/0 hover:text-accent transition-colors duration-300 text-xs font-medium"
+              >
+                لوحة التحكم
+              </Link>
           </div>
         </div>
       </div>
