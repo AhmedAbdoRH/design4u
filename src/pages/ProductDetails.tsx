@@ -46,7 +46,7 @@ export default function ProductDetails() {
 
       const { data, error: fetchError } = await supabase
         .from('services')
-        .select('*, sizes:product_sizes(*)')
+        .select('*')
         .eq('id', serviceId)
         .single();
 
@@ -54,9 +54,6 @@ export default function ProductDetails() {
       if (!data) throw new Error('المنتج غير موجود');
 
       setService(data);
-      if (data.has_multiple_sizes && data.sizes && data.sizes.length > 0) {
-        setSelectedSize(data.sizes[0]);
-      }
     } catch (err: any) {
       setError(err.message);
     } finally {
@@ -69,7 +66,7 @@ export default function ProductDetails() {
     
     const { data } = await supabase
       .from('services')
-      .select('*, sizes:product_sizes(*)')
+      .select('*')
       .eq('category_id', service.category_id)
       .neq('id', id)
       .limit(10);
@@ -167,98 +164,50 @@ export default function ProductDetails() {
                   })()}
                 </div>
                 <div className="border-t border-gray-200 pt-6 mb-6">
-                  {service.has_multiple_sizes && service.sizes && service.sizes.length > 0 && (
-                    <div className="mb-4">
-                      <h4 className="text-lg font-bold mb-2 text-gray-800 text-right">المقاسات المتوفرة</h4>
-                      <div className="flex flex-wrap gap-2 justify-end">
-                        {service.sizes.map((size) => (
-                          <button
-                            key={size.id}
-                            onClick={() => setSelectedSize(size)}
-                            className={`px-4 py-2 rounded-lg font-bold transition-colors ${ selectedSize?.id === size.id
-                                ? 'bg-secondary text-primary'
-                                : 'bg-gray-200 text-gray-800 hover:bg-gray-300'}`}
-                          >
-                            {size.size}
-                          </button>
-                        ))}
-                      </div>
+                  {(service.sale_price || service.price) ? (
+                    <div className="text-2xl font-bold text-accent mb-6 text-right">
+                      {service.sale_price ? (
+                        <div className="flex flex-col items-end">
+                          <span className="text-2xl text-gold-dark">{service.sale_price} ج</span>
+                          {service.price ? (
+                            <span className="text-lg text-gray-400 line-through">{service.price} ج</span>
+                          ) : null}
+                        </div>
+                      ) : (
+                        <span>{service.price} ج</span>
+                      )}
                     </div>
-                  )}
-                  {service.has_multiple_sizes ? (
-                    (selectedSize?.sale_price || selectedSize?.price) ? (
-                      <div className="text-2xl font-bold text-accent mb-6 text-right">
-                        {selectedSize?.sale_price ? (
-                          <div className="flex flex-col items-end">
-                            <span className="text-2xl text-gold-dark">{selectedSize.sale_price} ج</span>
-                            {selectedSize?.price ? (
-                              <span className="text-lg text-gray-400 line-through">{selectedSize.price} ج</span>
-                            ) : null}
-                          </div>
-                        ) : (
-                          <span>{selectedSize?.price} ج</span>
-                        )}
-                      </div>
-                    ) : null
-                  ) : (
-                    (service.sale_price || service.price) ? (
-                      <div className="text-2xl font-bold text-accent mb-6 text-right">
-                        {service.sale_price ? (
-                          <div className="flex flex-col items-end">
-                            <span className="text-2xl text-gold-dark">{service.sale_price} ج</span>
-                            {service.price ? (
-                              <span className="text-lg text-gray-400 line-through">{service.price} ج</span>
-                            ) : null}
-                          </div>
-                        ) : (
-                          <span>{service.price} ج</span>
-                        )}
-                      </div>
-                    ) : null
-                  )}
+                  ) : null}
                   <div className="flex gap-4 items-center">
-                    <button
-                      onClick={handleContact}
-                      className="flex-1 bg-[#25D366] text-white py-3 px-6 rounded-lg font-bold hover:bg-opacity-90 flex items-center justify-center gap-2"
-                    >
-                      <MessageCircle className="h-5 w-5" />
-                      تواصل معنا للطلب
-                    </button>
-                    <button
-                      onClick={(e) => {
-                        e.preventDefault();
-                        if (service.has_multiple_sizes) {
-                          if (selectedSize) {
-                            addToCart({
-                              id: service.id,
-                              title: service.title,
-                              price: selectedSize.sale_price || selectedSize.price,
-                              imageUrl: service.image_url || '',
-                              size: selectedSize.size,
-                            });
-                            toast.success('تمت إضافة المنتج إلى السلة');
-                          } else {
-                            toast.error('الرجاء اختيار مقاس');
-                          }
-                        } else {
-                          addToCart({
-                            id: service.id,
-                            title: service.title,
-                            price: service.sale_price || service.price || 0,
-                            imageUrl: service.image_url || '',
-                          });
-                          toast.success('تمت إضافة المنتج إلى السلة');
-                        }
-                      }}
-                      className="bg-header hover:brightness-110 text-white p-3 rounded-lg font-bold flex items-center justify-center"
-                      title="أضف إلى السلة"
-                    >
-                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <circle cx="9" cy="21" r="1"></circle>
-                        <circle cx="20" cy="21" r="1"></circle>
-                        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
-                      </svg>
-                    </button>
+                    {service.dst_file_url && (
+                      <a
+                        href={service.dst_file_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-bold flex items-center justify-center transition-all duration-300 transform hover:scale-105 shadow-lg"
+                        title="تحميل الملف بصيغة .dst"
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5 ml-2">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m0 0l6.75-6.75M12 19.5l-6.75-6.75" />
+                        </svg>
+                        تحميل الملف بصيغة .dst
+                      </a>
+                    )}
+                    {service.emb_file_url && (
+                      <a
+                        href={service.emb_file_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-bold flex items-center justify-center transition-all duration-300 transform hover:scale-105 shadow-lg"
+                        title="تحميل الملف بصيغة .emb"
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5 ml-2">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m0 0l6.75-6.75M12 19.5l-6.75-6.75" />
+                        </svg>
+                        تحميل الملف بصيغة .emb
+                      </a>
+                    )}
+
                   </div>
                 </div>
               </div>
@@ -303,29 +252,6 @@ export default function ProductDetails() {
                   />
                   <div className="mt-2 text-sm md:text-base font-bold text-gray-800 truncate text-right">{item.title}</div>
                   {(() => {
-                    if (item.has_multiple_sizes && item.sizes && item.sizes.length > 0) {
-                      const first = item.sizes[0];
-                      const hasSale = !!first.sale_price;
-                      const hasPrice = !!first.price;
-                      if (hasSale) {
-                        return (
-                          <div className="flex flex-col items-end">
-                            <span className="text-xs md:text-sm text-[#D4AF37] font-bold">{first.sale_price} ج</span>
-                            {hasPrice ? (
-                              <span className="text-xs text-gray-400 line-through">{first.price} ج</span>
-                            ) : null}
-                          </div>
-                        );
-                      }
-                      if (hasPrice) {
-                        return (
-                          <div className="flex flex-col items-end">
-                            <span className="text-xs md:text-sm text-accent">{first.price} ج</span>
-                          </div>
-                        );
-                      }
-                      return null;
-                    }
                     if (item.sale_price) {
                       return (
                         <div className="flex flex-col items-end">

@@ -15,15 +15,13 @@ interface ProductCardProps {
   price?: number | null; // Make price optional and number type
   salePrice?: number | null; // Make salePrice optional and number type
   id: string | number;
-  has_multiple_sizes?: boolean;
-  sizes?: ProductSize[];
   gallery?: string[]; // Add gallery images for the carousel
 }
 
 // Define the light gold color using the hex code from the Hero component
 const lightGold = '#FFD700'; // This is standard gold color
 
-export default function ProductCard({ title, description, imageUrl, price, salePrice, id, has_multiple_sizes, sizes, gallery = [] }: ProductCardProps) {
+export default function ProductCard({ title, description, imageUrl, price, salePrice, id, gallery = [] }: ProductCardProps) {
   // Convert single image to array for consistent handling
   const images = useMemo(() => {
     if (Array.isArray(imageUrl)) return imageUrl;
@@ -42,65 +40,24 @@ export default function ProductCard({ title, description, imageUrl, price, saleP
   const [isAdded, setIsAdded] = useState(false);
 
   // Pricing: show only if present in DB (no smart fallback)
-  const { displayPrice, displaySalePrice, hasMultiplePrices } = useMemo(() => {
-
-    if (has_multiple_sizes && sizes && sizes.length > 0) {
-      const validPrices = sizes
-        .map(s => parseFloat(s.price as any))
-        .filter(p => !isNaN(p) && p > 0);
-
-      const validSalePrices = sizes
-        .map(s => parseFloat(s.sale_price as any))
-        .filter(p => !isNaN(p) && p > 0);
-
-      const minPrice = validPrices.length > 0 ? Math.min(...validPrices) : null;
-      const maxPrice = validPrices.length > 0 ? Math.max(...validPrices) : null;
-      const minSalePrice = validSalePrices.length > 0 ? Math.min(...validSalePrices) : null;
-      const maxSalePrice = validSalePrices.length > 0 ? Math.max(...validSalePrices) : null;
-
-      if (minSalePrice && maxSalePrice) {
-        return { 
-          displayPrice: minPrice, 
-          displaySalePrice: minSalePrice, 
-          hasMultiplePrices: minSalePrice !== maxSalePrice
-        };
-      }
-      
-      if (minPrice && maxPrice) {
-        return { 
-          displayPrice: minPrice, 
-          displaySalePrice: null, 
-          hasMultiplePrices: minPrice !== maxPrice
-        };
-      }
-      
-      return { 
-        displayPrice: null, 
-        displaySalePrice: null, 
-        hasMultiplePrices: false
-      };
-    }
-
-    // Single price products
+  const { displayPrice, displaySalePrice } = useMemo(() => {
     const priceAsFloat = price ? parseFloat(price as any) : null;
     const salePriceAsFloat = salePrice ? parseFloat(salePrice as any) : null;
 
     if (priceAsFloat || salePriceAsFloat) {
       return { 
         displayPrice: priceAsFloat, 
-        displaySalePrice: salePriceAsFloat, 
-        hasMultiplePrices: false
+        displaySalePrice: salePriceAsFloat
       };
     }
 
     return { 
       displayPrice: null, 
-      displaySalePrice: null, 
-      hasMultiplePrices: false
+      displaySalePrice: null
     };
-  }, [has_multiple_sizes, sizes, price, salePrice, title]);
+  }, [price, salePrice]);
 
-  console.log('ProductCard Debug - title:', title, 'has_multiple_sizes:', has_multiple_sizes, 'sizes:', sizes, 'price:', price, 'salePrice:', salePrice, 'displayPrice:', displayPrice, 'displaySalePrice:', displaySalePrice);
+
 
   const handleContactClick = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -115,10 +72,7 @@ export default function ProductCard({ title, description, imageUrl, price, saleP
     
     setIsAdding(true);
     
-    // For products with multiple sizes, use the minimum price
-    const cartPrice = has_multiple_sizes && sizes && sizes.length > 0 
-      ? (displaySalePrice || displayPrice || 0)
-      : (displaySalePrice || displayPrice || 0);
+    const cartPrice = displaySalePrice || displayPrice || 0;
     
     addToCart({
       id,
@@ -196,21 +150,7 @@ export default function ProductCard({ title, description, imageUrl, price, saleP
       <div className="px-6 pb-6 pt-0">
         <div className="flex justify-between items-center gap-4">
           <div className="flex flex-col items-end min-h-10">
-            {has_multiple_sizes && (displayPrice || displaySalePrice) ? (
-              <>
-                <div className="flex items-center gap-2">
-                  <span className={`font-bold text-2xl sm:text-3xl text-gold-dark`}>
-                    {displaySalePrice || displayPrice}
-                  </span>
-                  <span className={`font-bold text-2xl sm:text-3xl text-gold-dark`}>ج</span>
-                </div>
-                {hasMultiplePrices ? (
-                  <span className="text-xs text-gray-400">يبدأ من</span>
-                ) : (
-                  <span className="text-xs text-gray-400">سعر موحد</span>
-                )}
-              </>
-            ) : displaySalePrice ? (
+            {displaySalePrice ? (
               <>
                 <div className="flex items-center gap-2">
                   <span className={`font-bold text-2xl sm:text-3xl text-gold-dark`}>{displaySalePrice}</span>

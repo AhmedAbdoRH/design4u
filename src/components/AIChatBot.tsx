@@ -88,14 +88,10 @@ export default function AIChatBot() {
                 .from('services')
                 .select(`
                     *,
-                    category:categories(*),
-                    sizes:product_sizes(*)
+                    category:categories(*)
                 `)
                 .order('created_at', { ascending: false });
             if (servicesError) throw servicesError;
-            
-            // Debug: Log the actual data to see what we're getting
-            console.log('ChatBot Debug - Services with sizes:', services);
 
             const { data: categories, error: categoriesError } = await supabase.from('categories').select('*').order('name');
             if (categoriesError) throw categoriesError;
@@ -120,53 +116,9 @@ export default function AIChatBot() {
                 context += `\n--- ${service.title} ---\n`;
                 context += `الوصف: ${service.description || 'لا يوجد وصف متاح'}\n`;
                 
-                // معالجة الأسعار المتعددة
-                if (service.has_multiple_sizes && service.sizes && service.sizes.length > 0) {
-                    context += `الأسعار المتاحة (متعددة المقاسات):\n`;
-                    
-                    // ترتيب المقاسات حسب السعر
-                    const sortedSizes = service.sizes.sort((a, b) => {
-                        const priceA = parseFloat(a.sale_price as any) || parseFloat(a.price as any);
-                        const priceB = parseFloat(b.sale_price as any) || parseFloat(b.price as any);
-                        return priceA - priceB;
-                    });
-                    
-                    sortedSizes.forEach(size => {
-                        if (size.sale_price) {
-                            context += `  - مقاس ${size.size}: ${size.sale_price} ج.م (بعد الخصم) - السعر الأصلي: ${size.price} ج.م\n`;
-                        } else {
-                            context += `  - مقاس ${size.size}: ${size.price} ج.م\n`;
-                        }
-                    });
-                    
-                    // إضافة أقل وأعلى سعر متاح
-                    const validPrices = product.sizes
-                        .map(s => parseFloat(s.price as any))
-                        .filter(p => !isNaN(p) && p > 0);
-                    const validSalePrices = product.sizes
-                        .map(s => parseFloat(s.sale_price as any))
-                        .filter(p => !isNaN(p) && p > 0);
-                    
-                    if (validSalePrices.length > 0) {
-                        const minSalePrice = Math.min(...validSalePrices);
-                        const maxSalePrice = Math.max(...validSalePrices);
-                        context += `  أقل سعر متاح: ${minSalePrice} ج.م (بعد الخصم)\n`;
-                        context += `  أعلى سعر متاح: ${maxSalePrice} ج.م (بعد الخصم)\n`;
-                    } else if (validPrices.length > 0) {
-                        const minPrice = Math.min(...validPrices);
-                        const maxPrice = Math.max(...validPrices);
-                        context += `  أقل سعر متاح: ${minPrice} ج.م\n`;
-                        context += `  أعلى سعر متاح: ${maxPrice} ج.م\n`;
-                    }
-                    
-                    // إضافة معلومات إضافية للمساعدة
-                    context += `  ملاحظة: هذه الخدمة متوفرة بعدة مقاسات، كل مقاس له سعر مختلف.\n`;
-                    context += `  المقاسات المتاحة: ${service.sizes.map(s => s.size).join(', ')}\n`;
-                } else {
-                    // أسعار خدمات السعر الواحد
-                    if (service.price) context += `السعر: ${service.price} ج.م\n`;
-                    if (service.sale_price) context += `السعر بعد الخصم: ${service.sale_price} ج.م\n`;
-                }
+                // أسعار الخدمات
+                if (service.price) context += `السعر: ${service.price} ج.م\n`;
+                if (service.sale_price) context += `السعر بعد الخصم: ${service.sale_price} ج.م\n`;
                 
                 if (service.category?.name) context += `الفئة: ${service.category.name}\n`;
                 // إضافة الرابط في البيانات التي سيراها النموذج ليستخدمها
@@ -180,22 +132,17 @@ export default function AIChatBot() {
 2.  اجعل ردودك مختصرة ومباشرة قدر الإمكان.
 3.  عند اقتراح أي خدمة، يجب أن تذكر نبذة قصيرة عنها ثم تضع رابطها مباشرةً باستخدام تنسيق الماركدون هكذا: [النبذة المختصرة عن الخدمة واسمها](رابط الخدمة الذي تم تزويدك به).
 4.  مهم جداً: لا تعرض الخدمات في جداول أبداً. كل خدمة يجب أن تكون في فقرة خاصة بها مع زر "عرض الخدمة" تحتها.
-5.  عند ذكر أسعار الخدمات متعددة المقاسات، اذكر أقل سعر متاح مع توضيح أنه "يبدأ من" هذا السعر.
-6.  إذا سأل العميل عن أسعار مقاسات معينة، اذكر الأسعار المحددة لكل مقاس.
-7.  عند السؤال عن "كم سعر الخدمة" أو "كم تكلف"، اذكر أقل سعر متاح مع توضيح أنه "يبدأ من" هذا السعر.
-8.  إذا سأل العميل عن مقاس معين (مثل "كم سعر المقاس الكبير")، اذكر السعر المحدد لذلك المقاس.
-9.  فهم أسئلة المقاسات: عندما يسأل العميل "اكبر مقاس بكام" أو "المقاس الكبير بكام" أو "المقاس الصغير بكام"، يجب أن تذكر الخدمات المتاحة مع أسعار أكبر أو أصغر مقاس حسب السؤال.
-10. إذا سأل العميل عن "اكبر مقاس" أو "المقاس الكبير"، اذكر الخدمات مع أعلى سعر متاح.
-11. إذا سأل العميل عن "اصغر مقاس" أو "المقاس الصغير"، اذكر الخدمات مع أقل سعر متاح.
-12. شجع العميل على طرح المزيد من الأسئلة بقول "لو حابب تفاصيل أكتر، أنا موجود يا فندم." في نهاية الرد.
-13. إذا لم تجد الخدمة المطلوبة، اقترح أقرب خدمة مشابهة لها.
-14. لا تذكر أي معلومات تواصل مثل رقم الواتساب
-15. لا تنادي العميل بكلمة "يا باشا" بل "يا فندم" (ومش لازم دايمًا تناديه بيها).
-16. استخدم إيموجيز بسيطة وملائمة في الردود لإضافة لمسة ودية، 
-17. قبل اسم الخدمة ضيف ▫️
-18. بلاش تحط كلمة "عرض الخدمة" يكفي زر عرض الخدمة اسفل النبذه فقط 
-19. رقم التواصل (لو العميل طلبه فقط) : 0 10 27381559
-20. استخدم صياغة محايدة أو مذكر، وما تستعملش صيغة المؤنث إلا لو العميلة بنفسها وضحت إنها أنثى أو ظهر من كلامها بشكل واضح انها انثى 
+5.  عند ذكر أسعار الخدمات، اذكر السعر الأساسي أو سعر التخفيض إن كان متاحاً.
+6.  عند السؤال عن "كم سعر الخدمة" أو "كم تكلف"، اذكر السعر المتاح أو سعر التخفيض إن وجد.
+7.  شجع العميل على طرح المزيد من الأسئلة بقول "لو حابب تفاصيل أكتر، أنا موجود يا فندم." في نهاية الرد.
+8.  إذا لم تجد الخدمة المطلوبة، اقترح أقرب خدمة مشابهة لها.
+9.  لا تذكر أي معلومات تواصل مثل رقم الواتساب
+10. لا تنادي العميل بكلمة "يا باشا" بل "يا فندم" (ومش لازم دايمًا تناديه بيها).
+11. استخدم إيموجيز بسيطة وملائمة في الردود لإضافة لمسة ودية، 
+12. قبل اسم الخدمة ضيف ▫️
+13. بلاش تحط كلمة "عرض الخدمة" يكفي زر عرض الخدمة اسفل النبذه فقط 
+14. رقم التواصل (لو العميل طلبه فقط) : 0 10 27381559
+15. استخدم صياغة محايدة أو مذكر، وما تستعملش صيغة المؤنث إلا لو العميلة بنفسها وضحت إنها أنثى أو ظهر من كلامها بشكل واضح انها انثى 
 .`;
 
         return context;

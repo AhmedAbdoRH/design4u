@@ -37,48 +37,7 @@ const ServiceCardDirect = ({ service }: { service: Service }) => {
           {(service as any)?.description ? ((service as any).description as string).split(/\r?\n/)[0] : ''}
         </p>
         <div className="flex flex-col items-end font-bold min-h-8">
-          {service.has_multiple_sizes && service.sizes && service.sizes.length > 0 ? (
-            (() => {
-              const validPrices = service.sizes
-                .map(s => parseFloat(s.price as any))
-                .filter(p => !isNaN(p) && p > 0);
-              const validSalePrices = service.sizes
-                .map(s => parseFloat(s.sale_price as any))
-                .filter(p => !isNaN(p) && p > 0);
-
-              const minPrice = validPrices.length > 0 ? Math.min(...validPrices) : null;
-              const maxPrice = validPrices.length > 0 ? Math.max(...validPrices) : null;
-              const minSalePrice = validSalePrices.length > 0 ? Math.min(...validSalePrices) : null;
-              const maxSalePrice = validSalePrices.length > 0 ? Math.max(...validSalePrices) : null;
-
-              if (minSalePrice && maxSalePrice) {
-                return (
-                  <>
-                    <div className="flex items-center gap-1">
-                      <span className={`text-lg text-header`}>{minSalePrice}</span>
-                      <span className={`text-lg text-header`}>ج</span>
-                    </div>
-                    {minSalePrice !== maxSalePrice && (
-                      <span className="text-xs text-gray-400">يبدأ من</span>
-                    )}
-                  </>
-                );
-              } else if (minPrice && maxPrice) {
-                return (
-                  <>
-                    <div className="flex items-center gap-1">
-                      <span className={`text-lg text-header`}>{minPrice}</span>
-                      <span className={`text-lg text-header`}>ج</span>
-                    </div>
-                    {minPrice !== maxPrice && (
-                      <span className="text-xs text-gray-400">يبدأ من</span>
-                    )}
-                  </>
-                );
-              }
-              return <div className="h-5" />;
-            })()
-          ) : service.sale_price ? (
+          {service.sale_price ? (
             <>
               <div className="flex items-center gap-1">
                 <span className={`text-lg text-gold-dark`}>{service.sale_price}</span>
@@ -89,11 +48,6 @@ const ServiceCardDirect = ({ service }: { service: Service }) => {
                 <span className="text-sm text-gray-400 line-through">ج</span>
               </div>
             </>
-          ) : service.price ? (
-            <div className="flex items-center gap-1">
-              <span className={`text-lg text-gold-dark`}>{service.price}</span>
-              <span className={`text-lg text-gold-dark`}>ج</span>
-            </div>
           ) : service.price ? (
             <div className="flex items-center gap-1">
               <span className={`text-lg text-gold-dark`}>{service.price}</span>
@@ -137,7 +91,7 @@ export default function Products() {
       setError(null);
       const { data, error } = await supabase
         .from('services')
-        .select('*, sizes:service_sizes(*)')
+        .select('*')
         .order('created_at', { ascending: false });
 
       if (error) {

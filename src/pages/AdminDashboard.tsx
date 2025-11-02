@@ -6,6 +6,14 @@ import { Trash2, Edit, Plus, Save, X, Upload, ChevronDown, ChevronUp, Facebook, 
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
+const transformGoogleDriveUrl = (url: string) => {
+  const match = url.match(/https:\/\/drive\.google\.com\/file\/d\/([a-zA-Z0-9_-]+)\/view/);
+  if (match && match[1]) {
+    return `https://drive.google.com/uc?export=download&id=${match[1]}`;
+  }
+  return url;
+};
+
 const lightGold = '#00BFFF';
 const brownDark = '#3d2c1d';
 const successGreen = '#228B22'; // Natural green color
@@ -63,10 +71,10 @@ export default function AdminDashboard({ onSettingsUpdate }: AdminDashboardProps
     gallery: [] as string[],
     is_featured: false,
     is_best_seller: false,
-    has_multiple_sizes: false,
     price: 0,
     sale_price: null as number | null,
-    sizes: [{ size: '', price: 0, sale_price: null as number | null }],
+    dst_file_url: null as string | null,
+    emb_file_url: null as string | null,
   });
   const [editingSubcategory, setEditingSubcategory] = useState<string | null>(null);
   const [selectedSubcategory, setSelectedSubcategory] = useState<string>('');
@@ -392,7 +400,7 @@ export default function AdminDashboard({ onSettingsUpdate }: AdminDashboardProps
 
       const { data: servicesData, error: servicesError } = await supabase
         .from('services')
-        .select(`*, category:categories(*), sizes:product_sizes(*)`)
+        .select(`*, category:categories(*)`)
         .order('created_at', { ascending: false });
       if (servicesError) throw servicesError;
       setServices(servicesData || []);
@@ -805,37 +813,22 @@ export default function AdminDashboard({ onSettingsUpdate }: AdminDashboardProps
     }
     setIsLoading(true);
     try {
-        const { sizes, ...serviceData } = newService;
-        
-        let serviceToAdd: Partial<Service> = {
-            ...serviceData,
+        const serviceToAdd: Partial<Service> = {
+            title: newService.title,
+            description: newService.description,
+            image_url: newService.image_url,
             category_id: selectedCategory,
             subcategory_id: selectedSubcategory || null,
             is_featured: newService.is_featured || false,
             is_best_seller: newService.is_best_seller || false,
-            has_multiple_sizes: newService.has_multiple_sizes,
+            price: newService.price,
+            sale_price: newService.sale_price,
+            gallery: newService.gallery,
         };
-
-        if (!newService.has_multiple_sizes) {
-          serviceToAdd.price = newService.price;
-          serviceToAdd.sale_price = newService.sale_price;
-        } else {
-          serviceToAdd.price = null;
-          serviceToAdd.sale_price = null;
-        }
 
         const { data: service, error } = await supabase.from('services').insert([serviceToAdd]).select();
 
         if (error) throw error;
-
-        if (service && newService.has_multiple_sizes && sizes) {
-            const sizesToInsert = sizes.map(size => ({
-                ...size,
-                service_id: service[0].id
-            }));
-            const { error: sizesError } = await supabase.from('product_sizes').insert(sizesToInsert);
-            if (sizesError) throw sizesError;
-        }
 
         // Reset form
         setNewService({
@@ -846,10 +839,8 @@ export default function AdminDashboard({ onSettingsUpdate }: AdminDashboardProps
             gallery: [],
             is_featured: false,
             is_best_seller: false,
-            has_multiple_sizes: false,
             price: 0,
             sale_price: null,
-            sizes: [{ size: '', price: 0, sale_price: null as number | null}],
         });
         setSelectedCategory('');
         setSelectedSubcategory('');
@@ -866,16 +857,6 @@ export default function AdminDashboard({ onSettingsUpdate }: AdminDashboardProps
   const handleEditService = async (service: Service) => {
     setEditingService(service.id);
 
-    const { data: sizes, error } = await supabase
-      .from('product_sizes')
-      .select('*')
-      .eq('service_id', service.id);
-
-    if (error) {
-      setError("خطأ في جلب مقاسات المنتج");
-      return;
-    }
-
     setNewService({
       title: service.title,
       description: service.description || '',
@@ -884,10 +865,10 @@ export default function AdminDashboard({ onSettingsUpdate }: AdminDashboardProps
       gallery: Array.isArray(service.gallery) ? service.gallery : [],
       is_featured: service.is_featured || false,
       is_best_seller: service.is_best_seller || false,
-      has_multiple_sizes: service.has_multiple_sizes || false,
       price: service.price || 0,
       sale_price: service.sale_price || null,
-      sizes: (sizes && sizes.length > 0) ? sizes : [{ size: '', price: 0, sale_price: null as number | null }],
+      dst_file_url: service.dst_file_url || '',
+      emb_file_url: service.emb_file_url || '',
     });
 
     setSelectedCategory(service.category_id || '');
@@ -905,43 +886,26 @@ export default function AdminDashboard({ onSettingsUpdate }: AdminDashboardProps
     }
     setIsLoading(true);
     try {
-      const { sizes, ...serviceData } = newService;
-      
-      let serviceToUpdate: Partial<Service> = {
-        ...serviceData,
+      const serviceToUpdate: Partial<Service> = {
+        title: newService.title,
+        description: newService.description,
+        image_url: newService.image_url,
         category_id: selectedCategory,
         subcategory_id: selectedSubcategory || null,
         is_featured: newService.is_featured || false,
         is_best_seller: newService.is_best_seller || false,
-        has_multiple_sizes: newService.has_multiple_sizes,
+        price: newService.price,
+        sale_price: newService.sale_price,
+        gallery: newService.gallery,
+        dst_file_url: newService.dst_file_url,
+        emb_file_url: newService.emb_file_url,
       };
-
-      if (!newService.has_multiple_sizes) {
-          serviceToUpdate.price = newService.price;
-          serviceToUpdate.sale_price = newService.sale_price;
-      } else {
-          serviceToUpdate.price = null;
-          serviceToUpdate.sale_price = null;
-      }
 
       const { error } = await supabase
         .from('services')
         .update(serviceToUpdate)
         .eq('id', editingService);
       if (error) throw error;
-
-      // First, delete all existing sizes for this product.
-      await supabase.from('product_sizes').delete().eq('service_id', editingService);
-
-      // If multi-size is enabled, insert the new sizes.
-      if (newService.has_multiple_sizes && sizes) {
-        const sizesToInsert = sizes.map(size => ({
-            ...size,
-            service_id: editingService
-        }));
-        const { error: sizesError } = await supabase.from('product_sizes').insert(sizesToInsert);
-        if (sizesError) throw sizesError;
-      }
 
       setNewService({ 
         title: '', 
@@ -951,10 +915,8 @@ export default function AdminDashboard({ onSettingsUpdate }: AdminDashboardProps
         gallery: [],
         is_featured: false,
         is_best_seller: false,
-        has_multiple_sizes: false,
         price: 0,
         sale_price: null,
-        sizes: [{ size: '', price: 0, sale_price: null as number | null}],
       });
       setSelectedCategory('');
       setSelectedSubcategory('');
@@ -978,10 +940,8 @@ export default function AdminDashboard({ onSettingsUpdate }: AdminDashboardProps
       gallery: [],
       is_featured: false,
       is_best_seller: false,
-      has_multiple_sizes: false,
       price: 0,
       sale_price: null,
-      sizes: [{ size: '', price: 0, sale_price: null as number | null}],
     });
     setSelectedCategory('');
     setSelectedSubcategory('');
@@ -1881,83 +1841,27 @@ export default function AdminDashboard({ onSettingsUpdate }: AdminDashboardProps
                           )}
                         </select>
                         
-                        <div className="flex items-center gap-2 p-2 bg-gray-700/50 rounded-md">
-                            <input type="checkbox" id="has_multiple_sizes" checked={newService.has_multiple_sizes} onChange={(e) => setNewService({ ...newService, has_multiple_sizes: e.target.checked })} className="h-4 w-4 accent-blue-500"/>
-                            <label htmlFor="has_multiple_sizes" className="text-white">نظام متعدد الاسعار</label>
-                        </div>
-
-                        {newService.has_multiple_sizes ? (
-                          <div>
-                            <h4 className="text-lg font-semibold mb-2 text-white">المتغيرات والأسعار</h4>
-                            {newService.sizes && newService.sizes.map((size, index) => (
-                              <div key={index} className="flex items-center gap-2 mb-2">
-                                <input
-                                  type="text"
-                                  placeholder="المتغير (مقاس, وزن , عدد..)"
-                                  value={size.size}
-                                  onChange={(e) => {
-                                    const newSizes = [...newService.sizes];
-                                    newSizes[index].size = e.target.value;
-                                    setNewService({ ...newService, sizes: newSizes });
-                                  }}
-                                  className="w-full p-2 rounded text-white bg-gray-800 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                  required
-                                />
-                                <input
-                                  type="number"
-                                  placeholder="السعر"
-                                  value={size.price === 0 ? '' : size.price}
-                                  onChange={(e) => {
-                                    const newSizes = [...newService.sizes];
-                                    newSizes[index].price = parseFloat(e.target.value);
-                                    setNewService({ ...newService, sizes: newSizes });
-                                  }}
-                                  className="w-full p-2 rounded text-white bg-gray-700 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                  required
-                                />
-                                <input
-                                  type="number"
-                                  placeholder="  سعر التخفيض (اختياري)"
-                                  value={size.sale_price || ''}
-                                  onChange={(e) => {
-                                    const newSizes = [...newService.sizes];
-                                    newSizes[index].sale_price = parseFloat(e.target.value) || null;
-                                    setNewService({ ...newService, sizes: newSizes });
-                                  }}
-                                  className="w-full p-2 rounded text-white bg-gray-700 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                />
-                                <button
-                                  type="button"
-                                  onClick={() => {
-                                    const newSizes = [...newService.sizes];
-                                    newSizes.splice(index, 1);
-                                    setNewService({ ...newService, sizes: newSizes });
-                                  }}
-                                  className="bg-red-600 text-white p-2 rounded-md hover:bg-red-700"
-                                >
-                                  <Trash2 size={18} />
-                                </button>
-                              </div>
-                            ))}
-                            <button
-                              type="button"
-                              onClick={() => {
-                                const newSizes = [...(newService.sizes || []), { size: '', price: 0, sale_price: null }];
-                                setNewService({ ...newService, sizes: newSizes });
-                              }}
-                              className="bg-blue-800 text-white px-4 py-2 rounded-md hover:bg-blue-700"
-                            >
-                             + مقاس اضافي
-                            </button>
+                        <div className="space-y-2 w-full">
+                          <div className="relative">
+                            <input 
+                              type="number" 
+                              placeholder="السعر (اختياري)" 
+                              value={newService.price || ''} 
+                              onChange={(e) => setNewService({ ...newService, price: e.target.value !== '' ? parseFloat(e.target.value) : null })} 
+                              className="w-full p-3 pr-10 rounded text-white bg-gray-700 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500" 
+                              disabled={isLoading}
+                            />
+                            <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-sm">
+                              ج.م
+                            </span>
                           </div>
-                        ) : (
-                          <div className="space-y-2 w-full">
+                          {newService.price !== null && (
                             <div className="relative">
                               <input 
                                 type="number" 
-                                placeholder="السعر (اختياري)" 
-                                value={newService.price || ''} 
-                                onChange={(e) => setNewService({ ...newService, price: e.target.value !== '' ? parseFloat(e.target.value) : null })} 
+                                placeholder="سعر التخفيض (اختياري)" 
+                                value={newService.sale_price || ''} 
+                                onChange={(e) => setNewService({ ...newService, sale_price: e.target.value !== '' ? parseFloat(e.target.value) : null })} 
                                 className="w-full p-3 pr-10 rounded text-white bg-gray-700 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500" 
                                 disabled={isLoading}
                               />
@@ -1965,23 +1869,11 @@ export default function AdminDashboard({ onSettingsUpdate }: AdminDashboardProps
                                 ج.م
                               </span>
                             </div>
-                            {newService.price !== null && (
-                              <div className="relative">
-                                <input 
-                                  type="number" 
-                                  placeholder="سعر التخفيض (اختياري)" 
-                                  value={newService.sale_price || ''} 
-                                  onChange={(e) => setNewService({ ...newService, sale_price: e.target.value !== '' ? parseFloat(e.target.value) : null })} 
-                                  className="w-full p-3 pr-10 rounded text-white bg-gray-700 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500" 
-                                  disabled={isLoading}
-                                />
-                                <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-sm">
-                                  ج.م
-                                </span>
-                              </div>
-                            )}
-                          </div>
-                        )}
+                          )}
+                        </div>
+
+                        <input type="url" placeholder="رابط ملف DST (اختياري)" value={newService.dst_file_url || ''} onChange={(e) => setNewService({ ...newService, dst_file_url: transformGoogleDriveUrl(e.target.value) })} className="w-full p-3 rounded text-white bg-gray-700 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500" disabled={isLoading}/>
+                        <input type="url" placeholder="رابط ملف EMB (اختياري)" value={newService.emb_file_url || ''} onChange={(e) => setNewService({ ...newService, emb_file_url: transformGoogleDriveUrl(e.target.value) })} className="w-full p-3 rounded text-white bg-gray-700 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500" disabled={isLoading}/>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                             <div className="flex items-center gap-2 p-2 bg-gray-700/50 rounded-md">
@@ -2033,14 +1925,7 @@ export default function AdminDashboard({ onSettingsUpdate }: AdminDashboardProps
                                 <h4 className="font-bold text-white text-lg truncate">{service.title}</h4>
                                 <div className="text-xs text-gray-400 mb-1">{service.category?.name || 'قسم غير محدد'}</div>
                                 <div className="flex items-center gap-3 mt-1">
-                                  {service.has_multiple_sizes && service.sizes && service.sizes.length > 0 && service.sizes[0].sale_price ? (
-                                    <>
-                                      <span className="font-semibold text-green-400">{service.sizes[0].sale_price}</span>
-                                      <span className="text-sm text-gray-500 line-through">{service.sizes[0].price}</span>
-                                    </>
-                                  ) : service.has_multiple_sizes && service.sizes && service.sizes.length > 0 ? (
-                                    <span className="font-semibold text-green-400">{service.sizes[0].price}</span>
-                                  ) : service.sale_price ? (
+                                  {service.sale_price ? (
                                     <>
                                       <span className="font-semibold text-green-400">{service.sale_price}</span>
                                       <span className="text-sm text-gray-500 line-through">{service.price}</span>

@@ -34,6 +34,10 @@ export default defineConfig({
   },
   // Enable gzip compression
   server: {
+    port: 5173,
+    hmr: {
+      clientPort: 5173,
+    },
     headers: {
       'Cache-Control': 'public, max-age=31536000',
     },

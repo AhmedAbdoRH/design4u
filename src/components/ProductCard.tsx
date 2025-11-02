@@ -42,8 +42,7 @@ export default function Services() {
         .from('services')
         .select(`
           *,
-          category:categories(*),
-          sizes:service_sizes(*)
+          category:categories(*)
         `)
         .order('created_at', { ascending: false });
 
@@ -134,8 +133,6 @@ export default function Services() {
               imageUrl={service.image_url || ''}
               price={service.price}
               salePrice={service.sale_price}
-              has_multiple_sizes={service.has_multiple_sizes}
-              sizes={service.sizes}
             />
           ))}
         </div>

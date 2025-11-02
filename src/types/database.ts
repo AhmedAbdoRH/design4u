@@ -36,6 +36,8 @@ export interface Service {
   sizes?: ProductSize[]; // Array of product sizes
   is_featured?: boolean; // أحدث العروض
   is_best_seller?: boolean; // الأكثر مبيعاً
+  dst_file_url?: string | null;
+  emb_file_url?: string | null;
   created_at: string;
   category?: Category;
   subcategory?: Subcategory; // إضافة علاقة الفئة الفرعية
