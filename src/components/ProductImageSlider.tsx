@@ -125,7 +125,7 @@ export default function ProductImageSlider({ mainImageUrl, additionalImages }: P
         resistance={true}
         resistanceRatio={0.85}
         watchSlidesProgress={true}
-        watchSlidesVisibility={true}
+        watchslidesvisibility={true}
       >
         {images.map((imageUrl, index) => (
           <SwiperSlide key={index}>

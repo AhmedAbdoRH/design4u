@@ -54,7 +54,9 @@ const ServiceCardDirect = ({ service }: { service: Service }) => {
               <span className={`text-lg text-gold-dark`}>ج</span>
             </div>
           ) : (
-            <div className="h-5" />
+            <div className="flex items-center gap-1">
+              <span className={`text-lg text-gold-dark`}>مجاناً</span>
+            </div>
           )}
         </div>
       </div>

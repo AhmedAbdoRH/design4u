@@ -171,7 +171,9 @@ export default function ProductCard({ title, description, imageUrl, price, saleP
                 </div>
               </>
             ) : (
-              <div className="h-6" />
+              <div className="flex items-center gap-2">
+                <span className={`font-bold text-2xl sm:text-3xl text-gold-dark`}>مجاناً</span>
+              </div>
             )}
           </div>
           

@@ -279,7 +279,7 @@ export default function ServiceDetails() {
                   </p>
                   <div className="border-t border-gray-700 pt-6 mb-6">
                     <div className="text-2xl font-bold text-accent mb-6">
-                      {service.price}
+                      {service.price ? `${service.price} ج` : 'مجاناً'}
                     </div>
                     <div className="flex gap-4">
                       <button
@@ -342,7 +342,7 @@ export default function ServiceDetails() {
                       className="w-full h-24 md:h-40 object-cover rounded"
                     />
                     <div className="mt-2 text-sm md:text-base font-bold text-secondary truncate">{item.title}</div>
-                    <div className="text-xs md:text-sm text-accent">{item.price}</div>
+                    <div className="text-xs md:text-sm text-accent">{item.price ? `${item.price} ج` : 'مجاناً'}</div>
                   </div>
                 );
               })}
