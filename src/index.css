@@ -223,9 +223,30 @@ button.facebook-button:hover svg {
 }
 
 .hero-preview {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 8px;
+  /* Removed grid properties as ImageSlider will handle its own layout */
+  /* display: grid; */
+  /* grid-template-columns: repeat(3, 1fr); */
+  /* gap: 8px; */
+  width: 100%; /* Ensure it takes full width */
+  aspect-ratio: 4/3; /* Set aspect ratio to 4:3 */
+  overflow: hidden; /* Hide overflowing parts of the image */
+  border-radius: 18px; /* Match hero-frame border-radius */
+}
+
+.image-slider-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+.image-slider-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Cover the container while maintaining aspect ratio */
+  transition: opacity 1s ease-in-out; /* Smooth transition for image changes */
 }
 
 .hero-ph {
@@ -271,13 +292,14 @@ button.facebook-button:hover svg {
   }
   
   .hero-preview {
-    grid-template-columns: repeat(3, 1fr);
-    max-width: 280px;
+    /* grid-template-columns: repeat(3, 1fr); */
+    max-width: 400px; /* Adjust max-width for smaller screens */
     margin: 0 auto;
   }
   
   .hero-frame {
     padding: 8px;
+    max-width: 420px; /* Adjust max-width for smaller screens */
   }
 }
 
@@ -301,12 +323,13 @@ button.facebook-button:hover svg {
     margin-bottom: 20px;
     border-radius: 16px;
     padding: 6px;
-    max-width: 240px;
+    max-width: 300px; /* Adjust max-width for mobile screens */
   }
   
   .hero-preview {
-    grid-template-columns: repeat(3, 1fr);
-    gap: 6px;
+    /* grid-template-columns: repeat(3, 1fr); */
+    /* gap: 6px; */
+    max-width: 280px; /* Adjust max-width for mobile screens */
   }
   
   .hero-ph {

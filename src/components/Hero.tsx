@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
+import ImageSlider from './ImageSlider'; // Import the new ImageSlider component
 
 export default function Hero() {
   return (
@@ -74,74 +75,7 @@ export default function Hero() {
             transition={{ duration: 0.8, delay: 0.4 }}
           >
             <div className="hero-preview">
-              {/* الصف الأول */}
-              <motion.div
-                className="hero-ph"
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.6, delay: 0.6 }}
-              >
-                <svg viewBox="0 0 100 100">
-                  <path d="M10 60 L40 30 L65 55 L85 35" stroke="#2a4365" strokeWidth="6" fill="none"/>
-                  <circle cx="30" cy="35" r="6" fill="#b63b4a"/>
-                </svg>
-              </motion.div>
-              
-              <motion.div
-                className="hero-ph"
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.6, delay: 0.7 }}
-              >
-                <svg viewBox="0 0 100 100">
-                  <path d="M20 80 L80 20 M20 20 L80 80" stroke="#c6a052" strokeWidth="8"/>
-                </svg>
-              </motion.div>
-              
-              <motion.div
-                className="hero-ph"
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.6, delay: 0.8 }}
-              >
-                <svg viewBox="0 0 100 100">
-                  <rect x="18" y="18" width="64" height="64" rx="10" stroke="#b63b4a" strokeWidth="6" fill="none"/>
-                </svg>
-              </motion.div>
-              
-              {/* الصف الثاني */}
-              <motion.div
-                className="hero-ph"
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.6, delay: 0.9 }}
-              >
-                <svg viewBox="0 0 100 100">
-                  <path d="M15 70 Q50 30 85 70" stroke="#b63b4a" strokeWidth="7" fill="none"/>
-                </svg>
-              </motion.div>
-              
-              <motion.div
-                className="hero-ph"
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.6, delay: 1.0 }}
-              >
-                <svg viewBox="0 0 100 100">
-                  <circle cx="50" cy="50" r="28" stroke="#2a4365" strokeWidth="6" fill="none"/>
-                </svg>
-              </motion.div>
-              
-              <motion.div
-                className="hero-ph"
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.6, delay: 1.1 }}
-              >
-                <svg viewBox="0 0 100 100">
-                  <rect x="15" y="25" width="70" height="50" rx="8" stroke="#c6a052" strokeWidth="6" fill="none"/>
-                </svg>
-              </motion.div>
+              <ImageSlider /> {/* Use the ImageSlider component here */}
             </div>
           </motion.div>
         </div>
