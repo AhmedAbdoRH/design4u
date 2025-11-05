@@ -4,6 +4,25 @@ import react from '@vitejs/plugin-react';
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
+  server: {
+    port: 5173,
+    hmr: {
+      clientPort: 5173,
+    },
+    headers: {
+      'Cache-Control': 'public, max-age=31536000',
+    },
+    watch: {
+      usePolling: true,
+      interval: 500,
+      ignored: [
+        '**/node_modules/**',
+        '**/.git/**',
+        '**/*.timestamp-*.mjs',
+        '**/*.timestamp-*.js',
+      ],
+    },
+  },
   build: {
     // Use esbuild for minification (faster and doesn't require terser)
     minify: 'esbuild',
@@ -31,15 +50,5 @@ export default defineConfig({
       '@supabase/supabase-js',
       'react-helmet-async',
     ],
-  },
-  // Enable gzip compression
-  server: {
-    port: 5173,
-    hmr: {
-      clientPort: 5173,
-    },
-    headers: {
-      'Cache-Control': 'public, max-age=31536000',
-    },
   },
 });
