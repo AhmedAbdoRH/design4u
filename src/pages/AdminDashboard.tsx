@@ -38,6 +38,8 @@ export default function AdminDashboard({ onSettingsUpdate }: AdminDashboardProps
   const [uploadingImage, setUploadingImage] = useState(false);
   const [removingBackground, setRemovingBackground] = useState(false);
   const [uploadingBannerImage, setUploadingBannerImage] = useState(false);
+  const [uploadingDstFile, setUploadingDstFile] = useState(false);
+  const [uploadingEmbFile, setUploadingEmbFile] = useState(false);
   const [editingService, setEditingService] = useState<number | null>(null);
   const [uploadingLogo, setUploadingLogo] = useState(false);
   const [logoUrl, setLogoUrl] = useState<string | null>(null);
@@ -1255,6 +1257,72 @@ export default function AdminDashboard({ onSettingsUpdate }: AdminDashboardProps
     }
   };
 
+  const handleDstFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    setUploadingDstFile(true);
+    try {
+      // التحقق من نوع الملف
+      if (!file.name.toLowerCase().endsWith('.dst')) {
+        throw new Error('الرجاء اختيار ملف DST صالح');
+      }
+
+      const fileName = `dst_${Date.now()}_${Math.random().toString(36).substring(2)}.dst`;
+
+      // رفع الملف إلى bucket باسم 'embroidery-files'
+      const { error: uploadError } = await supabase.storage
+        .from('embroidery-files')
+        .upload(fileName, file, { upsert: true });
+
+      if (uploadError) throw uploadError;
+
+      const { data: { publicUrl } } = supabase.storage
+        .from('embroidery-files')
+        .getPublicUrl(fileName);
+
+      setNewService(prev => ({ ...prev, dst_file_url: publicUrl }));
+      toast.success('تم رفع ملف DST بنجاح!');
+    } catch (err: any) {
+      toast.error(`خطأ في رفع ملف DST: ${err.message}`);
+    } finally {
+      setUploadingDstFile(false);
+    }
+  };
+
+  const handleEmbFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    setUploadingEmbFile(true);
+    try {
+      // التحقق من نوع الملف
+      if (!file.name.toLowerCase().endsWith('.emb')) {
+        throw new Error('الرجاء اختيار ملف EMB صالح');
+      }
+
+      const fileName = `emb_${Date.now()}_${Math.random().toString(36).substring(2)}.emb`;
+
+      // رفع الملف إلى bucket باسم 'embroidery-files'
+      const { error: uploadError } = await supabase.storage
+        .from('embroidery-files')
+        .upload(fileName, file, { upsert: true });
+
+      if (uploadError) throw uploadError;
+
+      const { data: { publicUrl } } = supabase.storage
+        .from('embroidery-files')
+        .getPublicUrl(fileName);
+
+      setNewService(prev => ({ ...prev, emb_file_url: publicUrl }));
+      toast.success('تم رفع ملف EMB بنجاح!');
+    } catch (err: any) {
+      toast.error(`خطأ في رفع ملف EMB: ${err.message}`);
+    } finally {
+      setUploadingEmbFile(false);
+    }
+  };
+
   const handleImageUploadTestimonial = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
@@ -1872,8 +1940,81 @@ export default function AdminDashboard({ onSettingsUpdate }: AdminDashboardProps
                           )}
                         </div>
 
-                        <input type="url" placeholder="رابط ملف DST (اختياري)" value={newService.dst_file_url || ''} onChange={(e) => setNewService({ ...newService, dst_file_url: transformGoogleDriveUrl(e.target.value) })} className="w-full p-3 rounded text-white bg-gray-700 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500" disabled={isLoading}/>
-                        <input type="url" placeholder="رابط ملف EMB (اختياري)" value={newService.emb_file_url || ''} onChange={(e) => setNewService({ ...newService, emb_file_url: transformGoogleDriveUrl(e.target.value) })} className="w-full p-3 rounded text-white bg-gray-700 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500" disabled={isLoading}/>
+                        {/* DST File Section */}
+                        <div className="space-y-2">
+                          <label className="block text-sm font-medium text-gray-300">ملف DST (اختياري)</label>
+                          <div className="flex gap-2">
+                            <input
+                              type="url"
+                              placeholder="أو أدخل رابط ملف DST"
+                              value={newService.dst_file_url || ''}
+                              onChange={(e) => setNewService({ ...newService, dst_file_url: transformGoogleDriveUrl(e.target.value) })}
+                              className="flex-1 p-3 rounded text-white bg-gray-700 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                              disabled={isLoading || uploadingDstFile}
+                            />
+                            <label className="cursor-pointer bg-blue-600 hover:bg-blue-700 text-white px-4 py-3 rounded flex items-center gap-2 transition-colors disabled:opacity-50 whitespace-nowrap">
+                              <Upload size={18} />
+                              {uploadingDstFile ? 'جاري الرفع...' : 'رفع DST'}
+                              <input
+                                type="file"
+                                accept=".dst"
+                                onChange={handleDstFileUpload}
+                                className="hidden"
+                                disabled={isLoading || uploadingDstFile}
+                              />
+                            </label>
+                          </div>
+                          {newService.dst_file_url && (
+                            <div className="flex items-center gap-2 text-sm text-green-400">
+                              <span>✓ تم رفع الملف</span>
+                              <button
+                                type="button"
+                                onClick={() => setNewService({ ...newService, dst_file_url: null })}
+                                className="text-red-400 hover:text-red-300"
+                              >
+                                إزالة
+                              </button>
+                            </div>
+                          )}
+                        </div>
+
+                        {/* EMB File Section */}
+                        <div className="space-y-2">
+                          <label className="block text-sm font-medium text-gray-300">ملف EMB (اختياري)</label>
+                          <div className="flex gap-2">
+                            <input
+                              type="url"
+                              placeholder="أو أدخل رابط ملف EMB"
+                              value={newService.emb_file_url || ''}
+                              onChange={(e) => setNewService({ ...newService, emb_file_url: transformGoogleDriveUrl(e.target.value) })}
+                              className="flex-1 p-3 rounded text-white bg-gray-700 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                              disabled={isLoading || uploadingEmbFile}
+                            />
+                            <label className="cursor-pointer bg-green-600 hover:bg-green-700 text-white px-4 py-3 rounded flex items-center gap-2 transition-colors disabled:opacity-50 whitespace-nowrap">
+                              <Upload size={18} />
+                              {uploadingEmbFile ? 'جاري الرفع...' : 'رفع EMB'}
+                              <input
+                                type="file"
+                                accept=".emb"
+                                onChange={handleEmbFileUpload}
+                                className="hidden"
+                                disabled={isLoading || uploadingEmbFile}
+                              />
+                            </label>
+                          </div>
+                          {newService.emb_file_url && (
+                            <div className="flex items-center gap-2 text-sm text-green-400">
+                              <span>✓ تم رفع الملف</span>
+                              <button
+                                type="button"
+                                onClick={() => setNewService({ ...newService, emb_file_url: null })}
+                                className="text-red-400 hover:text-red-300"
+                              >
+                                إزالة
+                              </button>
+                            </div>
+                          )}
+                        </div>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                             <div className="flex items-center gap-2 p-2 bg-gray-700/50 rounded-md">
@@ -2114,3 +2255,5 @@ export default function AdminDashboard({ onSettingsUpdate }: AdminDashboardProps
     </div> 
   );
 }
+
+
