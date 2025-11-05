@@ -4,7 +4,11 @@ import { createClient } from '@supabase/supabase-js';
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || "https://qkubbestfkkzijrsizaf.supabase.co";
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFrdWJiZXN0ZmtremlqcnNpemFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjEyMjY2MDUsImV4cCI6MjA3NjgwMjYwNX0.axeExd65QERcalx0DVbkWtBdqRlSKV0h_7aM-5VVuPU";
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+export const createAuthenticatedSupabaseClient = (accessToken?: string) => {
+  return createClient(supabaseUrl, accessToken ? accessToken : supabaseAnonKey);
+};
+
+export const supabase = createAuthenticatedSupabaseClient();
 
 // Debug logging to verify connection
 console.log('🔗 Supabase Connected to:', supabaseUrl);
