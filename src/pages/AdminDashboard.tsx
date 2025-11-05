@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { createAuthenticatedSupabaseClient } from '../lib/supabase';
+import { supabase } from '../lib/supabase';
 import type { Category, Service, Banner, StoreSettings, Testimonial, Subcategory } from '../types/database'; // Added Subcategory type
 import { Trash2, Edit, Plus, Save, X, Upload, ChevronDown, ChevronUp, Facebook, Instagram, Twitter, Palette, Store, Image, List, Package } from 'lucide-react';
 import { ToastContainer, toast } from 'react-toastify';
@@ -2255,5 +2255,3 @@ export default function AdminDashboard({ onSettingsUpdate }: AdminDashboardProps
     </div> 
   );
 }
-
-
