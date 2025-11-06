@@ -66,6 +66,11 @@
   headers = {X-Prerender-Token = "V85u5WS8kbxdXKCF5KuR"}
   conditions = {User-Agent = ["Googlebot", "Bingbot", "Yandex", "DuckDuckBot", "Baiduspider", "facebookexternalhit", "twitterbot", "rogerbot", "linkedinbot", "embedly", "quora link preview", "showyoubot", "outbrain", "pinterest", "slackbot", "vkShare", "W3C_Validator"]}
 
+# Edge function for Prerender integration
+[[edge_functions]]
+  function = "prerender"
+  path = "/*"
+
 # SPA routing - fallback for regular users
 [[redirects]]
   from = "/*"
