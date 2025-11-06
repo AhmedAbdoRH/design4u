@@ -22,7 +22,7 @@ const CRAWLER_UA_SUBSTRINGS = [
 ];
 
 // Your Prerender.io configuration
-auth const PRERENDER_TOKEN = "V85u5WS8kbxdXKCF5KuR";
+const PRERENDER_TOKEN = "V85u5WS8kbxdXKCF5KuR";
 const PRERENDER_SERVICE_URL = "https://service.prerender.io";
 const SITE_ORIGIN = "https://designs4u.com";
 
