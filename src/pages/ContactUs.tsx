@@ -7,7 +7,7 @@ export default function ContactUs() {
     <>
       <Helmet>
         <title>اتصل بنا - Designs4U | خدمات الطباعة والتطريز</title>
-        <meta name="description" content="تواصل مع Designs4U - رقم الهاتف: +20 100 646 4349. نقدم أفضل خدمات الطباعة والتطريز وشروحات برامج التطريز في مصر." />
+        <meta name="description" content="تواصل مع Designs4U - رقم الهاتف: 01118666186. نقدم أفضل خدمات الطباعة والتطريز وشروحات برامج التطريز في مصر." />
         <meta name="keywords" content="اتصل بنا, Designs4U, هاتف, واتساب, طباعة, تطريز, خدمات طباعة, خدمات تطريز" />
         <link rel="canonical" href="https://designs4u.com/contact" />
       </Helmet>
@@ -37,10 +37,10 @@ export default function ContactUs() {
                     <div>
                       <h3 className="text-xl font-semibold text-white">هاتف</h3>
                       <a 
-                        href="tel:+201006464349" 
+                        href="tel:+201118666186" 
                         className="text-green-400 text-lg hover:text-green-300 transition-colors"
                       >
-                        +20 100 646 4349
+                        01118666186
                       </a>
                     </div>
                   </div>

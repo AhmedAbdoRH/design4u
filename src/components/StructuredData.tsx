@@ -34,14 +34,14 @@ export default function StructuredData({ type, data, services, categories, bread
           "contactPoint": [
             {
               "@type": "ContactPoint",
-              "telephone": "+201006464349",
+              "telephone": "+201118666186",
               "contactType": "customer service",
               "areaServed": "EG",
               "availableLanguage": "Arabic"
             },
             {
               "@type": "ContactPoint",
-              "telephone": "+201006464349",
+              "telephone": "+201118666186",
               "contactType": "customer service",
               "areaServed": "EG",
               "availableLanguage": "Arabic"

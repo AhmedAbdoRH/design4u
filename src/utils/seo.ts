@@ -124,7 +124,7 @@ export const generateOrganizationStructuredData = (storeSettings: any) => {
     ],
     "contactPoint": {
       "@type": "ContactPoint",
-      "telephone": "+201006464349",
+      "telephone": "+201118666186",
       "contactType": "customer service"
     }
   };
